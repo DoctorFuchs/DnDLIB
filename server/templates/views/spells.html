@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="w3-container w3-margin-top w3-padding-16 page">
+	<h1>{{api_resp.name}}</h1>
+	<p>Level {{api_resp.level}}, <a href="{{api_resp.school.url}}">{{api_resp.school.name}}<a>{% if api_resp.ritual == true %}, Ritual{% endif %}</p>
+	<div class="w3-half">
+		<b>Components:</b> 
+		{{ ", ".join(api_resp.components) }} 
+		{% if M in api_resp.components %}
+			<em>({{api_resp.material}})</em>
+		{% endif %}
+		<br>
+		<b>Concentration: </b>{{api_resp.concentration}}
+		<br>
+		<b>Casting time: </b>{{api_resp.casting_time}}
+		<br>
+		<b>Duration: </b>{{api_resp.duration}}	
+	</div>
+	<div class="w3-half">		
+		{% for description in api_resp.desc%}
+			<p>{{description}}</p>
+		{% endfor %}
+		{% if api_resp.higher_level != []%}
+			<p><b>On higher levels: </b></p>
+			{% for description in api_resp.higher_level%}
+				<p>{{description}}</p>
+			{% endfor %}
+		{% endif %}
+	</div>
+	<span>
+	
+	{% if api_resp.classes != []%}
+		<b>Classes: </b>
+		{% for cls in api_resp.classes %}
+			<a class="w3-tag" href="{{cls.url}}">{{cls.name}}</a>
+		{% endfor %}
+		</span>
+	{% endif %}
+	<br>
+	{% if api_resp.subclasses != []%}
+		<span>
+		<b>Subclasses: </b>
+		{% for cls in api_resp.subclasses %}
+			<a class="w3-tag" href="{{cls.url}}">{{cls.name}}</a>
+		{% endfor %}
+		</span>
+	{% endif %}
+	
+</div>
+{% endblock %}
