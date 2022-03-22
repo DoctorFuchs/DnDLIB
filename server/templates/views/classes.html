@@ -2,6 +2,7 @@
 {% block title %}
 Class - {{ api_resp.name }}
 {% endblock %}
+{% from 'commons/choice.html' import choice as choice %}
 {% block content %}
 <div class="w3-sidebar w3-bar-block">
   <a href="#general" class="w3-bar-item w3-button">General</a>
@@ -24,6 +25,12 @@ Class - {{ api_resp.name }}
     {% endif %}
     </p>
   </section>
-  <p>{{api_resp}}</p>
+  <section id="profiences">
+    {{api_resp.proficiency_choices}}
+    {% for proficiency_choice in api_resp.proficiency_choices %}
+      {{ choice(proficiency_choice) }}
+    {% endfor %}
+  </section>
+
 </div>
 {% endblock %}
