@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
   {% for index in api_resp.alignments %}
-  <ul id=proficiencies>
   <a href="{{index.url}}">{{index.name}}</a>
   {%endfor%}
   <div class="w3-margin-top w3-padding-16 w3-content w3-container page">
