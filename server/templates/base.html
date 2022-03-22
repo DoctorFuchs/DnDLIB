@@ -27,17 +27,20 @@
 	{% block scripts %}{% endblock %}
 </head>
 <body>
-	<div class="w3-bar w3-container w3-black">
-		<a href="/" class="w3-bar-item w3-button">Home</a>
-		<div class="w3-dropdown-hover w3-right">
-			<a href="/api/" class="w3-button">Offical basic rules</a>
-			<div class="w3-dropdown-content w3-bar-block w3-border">
-				{% for node_key, node_link in api.get("/").items() %}
-				<a href="{{node_link}}" class="w3-bar-item w3-button">{{node_key.capitalize().replace("-", " ")}}</a>
-				{% endfor %}
+	<div class="w3-top">
+		<div class="w3-bar w3-black">
+			<a href="/" class="w3-bar-item w3-button">Home</a>
+			<div class="w3-dropdown-hover w3-right">
+				<a href="/api/" class="w3-button">Offical basic rules</a>
+				<div class="w3-dropdown-content w3-bar-block w3-border">
+					{% for node_key, node_link in api.get("/").items() %}
+						<a href="{{node_link}}" class="w3-bar-item w3-button">{{node_key.capitalize().replace("-", " ")}}</a>
+					{% endfor %}
+				</div>
 			</div>
 		</div>
 	</div>
+	<br><br>
 	<div class="w3-container">
 		{% block content%}
 		{% endblock %}
