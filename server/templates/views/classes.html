@@ -1,4 +1,28 @@
 {% extends "base.html" %}
+{% block title %}
+Class - {{ api_resp.name }}
+{% endblock %}
 {% block content %}
-WORLD
+<div class="w3-sidebar w3-bar-block">
+  <a href="#general" class="w3-bar-item w3-button">General</a>
+  <a href="#profiences" class="w3-bar-item w3-button">Profiences</a>
+  <a href="#startequipment" class="w3-bar-item w3-button">Starting equipment</a>
+  <a href="#levels" class="w3-bar-item w3-button">Levels</a>
+  {% if "spellcasting" in api_resp.keys() %}
+    <a href="#spells" class="w3-bar-item w3-button">Spellcasting</a>
+  {% endif %}
+  <a href="#subclasses" class="w3-bar-item w3-button">Subclasses</a>
+</div>
+<div class="w3-container w3-margin-top w3-padding-16 w3-content page">
+  <h1>{{api_resp.name}}</h1>
+  <p>{{api_resp}}</p>
+  <section id="general">
+    <h1>General</h1>
+    <p>A {{api_resp.name}} has a hit dice of {{api_resp.hit_die}}.
+    {% if "spellcasting" in api_resp.keys() %}
+    As a spellcaster you will learn spells with great power.
+    {% endif %}
+    </p>
+  </section>
+</div>
 {% endblock %}

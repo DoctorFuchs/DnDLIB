@@ -1,4 +1,50 @@
 {% extends "base.html" %}
+{% block title %}
+Subclass - {{ api_resp.name }}
+{% endblock %}
+{% set subclass_levels = api.get(api.cut(api_resp.subclass_levels)) %}
 {% block content %}
-WORLD
+<div class="w3-container w3-margin-top w3-padding-16 w3-content page">
+  <h1>{{api_resp.name}}</h1>
+  <p><a href="{{api_resp.class.url}}">{{api_resp.class.name}}</a>, {{api_resp.subclass_flavor}}</p>
+  <div>
+		{% for description in api_resp.desc%}
+			<p>{{description}}</p>
+		{% endfor %}
+	</div>
+  <h1>Features</h1>
+  <table class="w3-table-all">
+    <tr>
+      <th>
+        Level
+      </th>
+      <th>
+        Features
+      </th>
+      <th>
+        Subclass specific
+      </th>
+    </tr>
+    {% for level in subclass_levels %}
+    <tr>
+      <th>
+        {{ level.level }}
+      </th>
+      <th>
+        {% for feature in level.features %}
+          {% if not loop.first %}<br>{% endif %}
+          <a href="{{feature.url}}">{{feature.name}}</a>
+        {% endfor %}
+      </th>
+      <th>
+        {% if "subclass_specific" in level.keys() %}
+          {% for key, value in level.subclass_specific.items() %}
+            <p>{{key}} = {{value}}</p>
+          {% endfor %}
+        {% endif %}
+      </th>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
 {% endblock %}

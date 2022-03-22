@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <head>
-	<title>{{ config.get("APP", "name") }}</title>
+	<title>{% block title %}{{ site.get("APP", "name") }}{% endblock %}</title>
 	<!--META INFORMATIONS-->
 	<meta name="description" content="Free wiki for DnD 5e">
 	<meta name="author" content="MexLab and DoctorFuchs">
-	
+
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta charset="UTF-8">
 	<!--LOADING STYLESHEETS-->
@@ -22,7 +22,7 @@
 	</style>
 	<link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet">
 	{% block stylesheets %}{% endblock %}
-	
+
 	<!--LOADING SCRIPTS-->
 	{% block scripts %}{% endblock %}
 </head>

@@ -8,11 +8,8 @@ import configparser
 config = configparser.ConfigParser()
 assert config.read("config.ini") != [], "CONFIG FILE WAS NOT READED"
 
-
 app = Flask(__name__)
 api = API("https://www.dnd5eapi.co/api/")
-
-
 
 @app.route("/api/", defaults={"request_path":"", "base_node":""}, methods=["GET", "POST"])
 @app.route("/api/<string:base_node>", defaults={"request_path":""}, methods=["GET", "POST"])
@@ -29,7 +26,7 @@ def api_serve(base_node:str, request_path:str):
 
         elif request_path == "":
             template = "views/list.html"
- 
+
         else:
             template = f"views/{base_node}.html"
 
@@ -54,7 +51,7 @@ def frontend_serve(request_path):
                 "api":api,
                 "path":request_path
             }), 200
-    
+
     except TemplateNotFound:
         return render_template("error.html", **{
                 "site":config,
