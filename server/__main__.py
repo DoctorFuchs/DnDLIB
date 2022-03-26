@@ -1,7 +1,8 @@
 from flask.templating import render_template
-from flask import Flask, request
+from flask import Flask, request, jsonify, send_from_directory
 from jinja2.exceptions import TemplateNotFound
 from server.utils.api import API
+from server.utils.path import get_path
 import os
 import configparser
 
@@ -10,6 +11,13 @@ assert config.read("config.ini") != [], "CONFIG FILE WAS NOT READED"
 
 app = Flask(__name__)
 api = API("https://www.dnd5eapi.co/api/")
+
+@app.errorhandler(AssertionError)
+def assertion_handler(error):
+    return jsonify({
+        "message": error.message,
+        "code": 400
+    }), 400
 
 @app.route("/api/", defaults={"request_path":"", "base_node":""}, methods=["GET", "POST"])
 @app.route("/api/<string:base_node>", defaults={"request_path":""}, methods=["GET", "POST"])
@@ -21,7 +29,7 @@ def api_serve(base_node:str, request_path:str):
         resp = api.get_raw(base_node+"/"+request_path)
         template = ""
 
-        if resp.status_code != 200 or not base_node+".html" in os.listdir(os.path.dirname(__file__)+"/templates/views".replace("/", os.sep)):
+        if resp.status_code != 200:
             template = "error.html"
 
         elif request_path == "":
@@ -41,6 +49,10 @@ def api_serve(base_node:str, request_path:str):
 
     else:
         return api.get(base_node+request_path)
+
+@app.route("/assets/<string:folder>/<path:path>")
+def asset_serve(folder, path):
+    return send_from_directory(get_path("/server/templates/assets/"+folder), path)
 
 @app.route("/", defaults={"request_path":"index.html"})
 @app.route("/<path:request_path>")

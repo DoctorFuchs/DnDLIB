@@ -1,7 +1,7 @@
 # CHANGELOG
 ### future version 0.0.2 -> ? (TODOs)   
 - character builder
-- update frontend
+- fix some bugs with the new render system
 
 ### version 0.0.3 -> 0.0.4 (around 26th march 2022)
 - clean up code
