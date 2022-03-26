@@ -11,10 +11,10 @@ class API:
         return path
 
     def get(self, path):
-        if path in self.cache: return self.cache[path].json()
         return self.get_raw(path).json()
 
     def get_raw(self, path):
+        if path in self.cache: return self.cache[path]
         resp = requests.get(self.api_url+path)
         self.cache[path] = resp
         return resp

@@ -1,0 +1,107 @@
+{% set Dictionary = {
+  	"desc": "Description"
+} %}
+
+{% macro APIReference(json, box=true, cell=true) %}
+<a href="{{json.url}}">
+  {% if box==true %}
+    {% if cell==true %}
+          <div class="w3-black w3-center w3-container w3-cell">
+              <p>{{String(json.name)}}</p>
+          </div>
+    {% else %}
+      <div class="w3-black w3-border w3-center w3-container w3-card-4" style="width:33%; float:left">
+          <p>{{String(json.name)}}</p>
+      </div>
+    {% endif %}
+  {% else %}
+    {{String(json.name)}}
+  {% endif %}
+</a>
+{% endmacro %}
+
+{% macro choice(json) %}
+    <h2>Choice {{ String(json.choose) }} from these {{ String(json.type) }}:</h2>
+    {% for choiceable in json.from %}
+      <a href="{{choiceable.url}}">
+          <li class="w3-black w3-center w3-container w3-cell">
+              <p>{{choiceable.name}}</p>
+          </li>
+      </a>
+    {% endfor %}
+{% endmacro %}
+
+{% macro cost(json) %}
+<p>{{String(json.quantity)}} {{Int(json.unit)}}</p>
+{% endmacro %}
+
+{% macro AbilityBonus(json) %}
+  <p>+{{ String(json.bonus)}} {{ APIReference(json.ability_score, box=false) }}</p>
+{% endmacro %}
+
+{% macro String(_str) %}
+  {% if _str is string %}
+    {% if not _str in Dictionary %}
+      {{_str
+        .replace("_", " ")
+        .replace("-", " ")
+        .capitalize()
+      }}
+    {% else %}
+      {{String(Dictionary[_str.lower()])}}
+    {% endif %}
+  {% else %}
+    {{_str}}
+  {% endif %}
+{% endmacro %}
+
+{% macro Number(_number) %}
+  {{_number}}
+{% endmacro %}
+
+{% macro Boolean(_bool) %}
+  {{_bool}}
+{% endmacro %}
+
+{% macro List(_list) %}
+  {% for item in _list %}
+    {% if item is mapping %}
+      {{Object(item)}}
+    {% else %}
+      {{String(item)}}
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+{% macro Object(_obj) %}
+  {% if "choose" in _obj %}
+    {{choice(_obj)}}
+  {% elif _obj is string %}
+    {{_obj}}
+  {% elif "url" in _obj and "index" in _obj and "name" in _obj %}
+    {{APIReference(_obj)}}
+  {% else %}
+    {% for obj_key, obj_value in _obj.items() %}
+      {% if obj_value is mapping%}
+        {{Object(_obj[obj_key])}}
+      {% else %}
+        <p><b>{{String(obj_key)}}:</b> {{String(obj_value)}}</p>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endmacro %}
+
+{% macro BackgroundFeature(_feature) %}
+<h3>{{String(_feature.name)}}</h3>
+{{Description(_feature.desc)}}
+{% endmacro %}
+
+{% macro Description(_desc) %}
+{% if _desc is mapping %}
+  {% for desc in _desc %}
+    <p>{{String(desc)}}<p><br>
+  {% endfor %}
+{% else %}
+  <p>{{String(_desc)}}<p><br>
+{% endif %}
+{% endmacro %}

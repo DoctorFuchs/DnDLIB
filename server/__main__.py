@@ -28,7 +28,7 @@ def api_serve(base_node:str, request_path:str):
             template = "views/list.html"
 
         else:
-            template = f"views/{base_node}.html"
+            template = f"render.html"
 
         return render_template(template, **{
             "request_path":request_path,
