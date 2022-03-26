@@ -25,7 +25,7 @@ def api_serve(base_node:str, request_path:str):
             template = "error.html"
 
         elif request_path == "":
-            template = "views/list.html"
+            template = "list.html"
 
         else:
             template = f"render.html"
