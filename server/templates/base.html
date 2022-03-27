@@ -17,13 +17,13 @@
 	<!--LOADING SCRIPTS-->
 	{% block scripts %}{% endblock %}
 </head>
-<body class="w3-content">
-	<div class="w3-top w3-white w3-content">
-		<div class="w3-bar">
+<body>
+	<div class="w3-top w3-white">
+		<div class="w3-bar w3-content">
 			<a href="/" class="w3-bar-item w3-hover-text-green">Home</a>
-			<div class="w3-dropdown-hover w3-right ">
+			<div class="w3-dropdown-hover w3-right">
 				<p class="w3-hover-white w3-hover-text-green w3-hide-small">Offical basic rules</p>
-				<i class="fa fa-bars w3-hover-white w3-hover-text-green w3-hide-medium w3-hide-large" ></i>
+				<P><i class="fa fa-bars w3-hover-white w3-hover-text-green w3-hide-medium w3-hide-large w3-margin-right"></i><p>
 				<div class="w3-dropdown-content w3-bar-block w3-border" style="right:0; width: 100%;">
 					{% for node_key, node_link in api.get("/").items() %}
 						<a href="{{node_link}}" class="w3-section w3-center w3-third w3-hover-text-green">{{node_key.capitalize().replace("-", " ")}}</a>
@@ -33,20 +33,22 @@
 		</div>
 	</div>
 	<br><br>
-	<div class="w3-container" style="min-height: 100vh">
+	<div class="w3-container w3-content" style="min-height: 100vh">
 		{% block content%}
 		{% endblock %}
 	</div>
-	<!--TODO: ADD FOOTER WITH USEFUL LINKS-->
-	<div class="w3-container w3-black">
+	<div class="w3-container w3-black w3-padding-16" style="min-height: 30vh;">
 		<div class="w3-quarter">
-
+			<br>
 		</div>
 		<div class="w3-quarter">
-
+			<h1><a href="https://www.github.com/doctorfuchs/dndlib"><i class="fa fa-github-square"></i>GitHub</a><h1>
 		</div>
-		<div class="w3-half">
-			<a href="licenses.html">Licenses</a>
+		<div class="w3-quarter">
+			<h2><a href="licenses.html">Licenses</a></h2>
+		</div>
+		<div class="w3-quarter">
+			<br>
 		</div>
 	</div>
 </body>
