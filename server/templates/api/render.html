@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import "models.html" as model %}
+{% import "/api/models.html" as model %}
 {% set head = ["name", "full_name"] %}
 {% set blocked = ["index", "url"]%}
 {% set bottom = ["class", "subclasses"]%}
@@ -71,7 +71,7 @@
 {% endmacro %}
 
 {% macro main_render(json) %}
-    <div class="page w3-content w3-container">
+    <div class="w3-content w3-container">
         {% if json is mapping %}
             {% if "full_name" in json %}
                 <h1>{{model.String(json.get("full_name"))}}</h1>

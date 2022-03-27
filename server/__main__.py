@@ -33,10 +33,10 @@ def api_serve(base_node:str, request_path:str):
             template = "error.html"
 
         elif request_path == "":
-            template = "list.html"
+            template = "/api/list.html"
 
         else:
-            template = f"render.html"
+            template = f"/api/render.html"
 
         return render_template(template, **{
             "request_path":request_path,
@@ -61,7 +61,7 @@ def frontend_serve(request_path):
         return render_template(request_path, **{
                 "site":config,
                 "api":api,
-                "path":request_path
+                "request_path":request_path
             }), 200
 
     except TemplateNotFound:

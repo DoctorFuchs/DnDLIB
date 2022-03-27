@@ -8,35 +8,45 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta charset="UTF-8">
 	<!--LOADING STYLESHEETS-->
-	<link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet">
+	<link href="{{url_for(".asset_serve", folder="css", path="w3.css")}}" rel="stylesheet">
 	<link href="{{url_for(".asset_serve", folder="css", path="general.css")}}" rel="stylesheet">
+	<link href="{{url_for(".asset_serve", folder="css", path="font-awesome.min.css")}}" rel="stylesheet">
+
 	{% block stylesheets %}{% endblock %}
 
 	<!--LOADING SCRIPTS-->
 	{% block scripts %}{% endblock %}
 </head>
-<body>
-	<div class="w3-top">
-		<div class="w3-bar w3-black">
-			<a href="/" class="w3-bar-item w3-button">Home</a>
-			<div class="w3-dropdown-hover w3-right">
-				<a href="/api/" class="w3-button">Offical basic rules</a>
-				<div class="w3-dropdown-content w3-bar-block w3-border">
+<body class="w3-content">
+	<div class="w3-top w3-white w3-content">
+		<div class="w3-bar">
+			<a href="/" class="w3-bar-item w3-hover-text-green">Home</a>
+			<div class="w3-dropdown-hover w3-right ">
+				<p class="w3-hover-white w3-hover-text-green w3-hide-small">Offical basic rules</p>
+				<i class="fa fa-bars w3-hover-white w3-hover-text-green w3-hide-medium w3-hide-large" ></i>
+				<div class="w3-dropdown-content w3-bar-block w3-border" style="right:0; width: 100%;">
 					{% for node_key, node_link in api.get("/").items() %}
-						<a href="{{node_link}}" class="w3-bar-item w3-button">{{node_key.capitalize().replace("-", " ")}}</a>
+						<a href="{{node_link}}" class="w3-section w3-center w3-third w3-hover-text-green">{{node_key.capitalize().replace("-", " ")}}</a>
 					{% endfor %}
 				</div>
 			</div>
 		</div>
 	</div>
 	<br><br>
-	<div class="w3-container">
+	<div class="w3-container" style="min-height: 100vh">
 		{% block content%}
 		{% endblock %}
 	</div>
 	<!--TODO: ADD FOOTER WITH USEFUL LINKS-->
-	<div class="w3-container">
-		{% block footer %}
-		{% endblock %}
+	<div class="w3-container w3-black">
+		<div class="w3-quarter">
+
+		</div>
+		<div class="w3-quarter">
+
+		</div>
+		<div class="w3-half">
+			<a href="licenses.html">Licenses</a>
+		</div>
 	</div>
 </body>

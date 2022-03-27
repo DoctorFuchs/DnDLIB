@@ -3,7 +3,7 @@
 } %}
 
 {% macro APIReference(json, box=true, cell=true) %}
-<a href="{{json.url}}">
+<a href="{{json.url}}" class="w3-mobile">
   {% if box==true %}
     {% if cell==true %}
           <div class="w3-black w3-center w3-container w3-cell">
