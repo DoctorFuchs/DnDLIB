@@ -1,8 +1,15 @@
 # CHANGELOG
-### future version 0.0.2 -> ? (TODOs)   
+### future versions (TODOs)   
 - character builder
 - fix some bugs with the new render system
 - wiki for homebrew things
+
+
+
+### version 0.0.4 -> 0.0.5 (around 5th April 2022)
+- first snapshot of a bookmark system
+- Licenses
+- make new render system more stable
 
 ### version 0.0.3 -> 0.0.4 (around 26th march 2022)
 - clean up code
