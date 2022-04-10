@@ -2,6 +2,7 @@
 ### future version 0.0.2 -> ? (TODOs)   
 - character builder
 - fix some bugs with the new render system
+- wiki for homebrew things
 
 ### version 0.0.3 -> 0.0.4 (around 26th march 2022)
 - clean up code

@@ -5,12 +5,18 @@ from server.utils.api import API
 from server.utils.path import get_path
 import os
 import configparser
+from markdown import markdown
+import mimetypes
 
 config = configparser.ConfigParser()
 assert config.read("config.ini") != [], "CONFIG FILE WAS NOT READED"
 
+mimetypes.add_type("text/javascript", ".js")
+
 app = Flask(__name__)
 api = API("https://www.dnd5eapi.co/api/")
+
+app.jinja_env.globals.update(markdown=markdown)
 
 @app.errorhandler(AssertionError)
 def assertion_handler(error):
@@ -52,7 +58,7 @@ def api_serve(base_node:str, request_path:str):
 
 @app.route("/assets/<string:folder>/<path:path>")
 def asset_serve(folder, path):
-    return send_from_directory(get_path("/server/templates/assets/"+folder), path)
+    return send_from_directory(get_path("/server/templates/assets/"+folder), path, mimetype=mimetypes.guess_type(path)[0])
 
 @app.route("/", defaults={"request_path":"index.html"})
 @app.route("/<path:request_path>")

@@ -32,21 +32,28 @@
 {% endmacro %}
 
 {% macro cost(json) %}
-<p>{{String(json.quantity)}} {{Int(json.unit)}}</p>
+<p><b>Cost: </b>{{Number(json.quantity)}} {{String(json.unit)}}</p>
 {% endmacro %}
 
 {% macro AbilityBonus(json) %}
-  <p>+{{ String(json.bonus)}} {{ APIReference(json.ability_score, box=false) }}</p>
+  <a href="{{json.ability_score.url}}" class="w3-tag">+{{ String(json.bonus)}} {{ json.ability_score.name }}</a>
 {% endmacro %}
 
-{% macro String(_str) %}
+{% macro String(_str, _markdown=false) %}
   {% if _str is string %}
     {% if not _str in Dictionary %}
-      {{_str
-        .replace("_", " ")
-        .replace("-", " ")
-        .capitalize()
-      }}
+        {% if _markdown == true%}
+            {{ markdown(_str
+                .replace("_", " ")
+                .replace("-", " ")
+                .capitalize())|safe
+            }}
+         {% else %}
+            {{_str
+                .replace("_", " ")
+                .replace("-", " ")
+                .capitalize()}}
+         {% endif %}
     {% else %}
       {{String(Dictionary[_str.lower()])}}
     {% endif %}
@@ -74,21 +81,30 @@
 {% endmacro %}
 
 {% macro Object(_obj) %}
-  {% if "choose" in _obj %}
-    {{choice(_obj)}}
-  {% elif _obj is string %}
-    {{_obj}}
-  {% elif "url" in _obj and "index" in _obj and "name" in _obj %}
-    {{APIReference(_obj)}}
-  {% else %}
-    {% for obj_key, obj_value in _obj.items() %}
-      {% if obj_value is mapping%}
-        {{Object(_obj[obj_key])}}
-      {% else %}
-        <p><b>{{String(obj_key)}}:</b> {{String(obj_value)}}</p>
-      {% endif %}
-    {% endfor %}
-  {% endif %}
+    {% if "choose" in _obj %}
+        {{choice(_obj)}}
+
+    {% elif _obj is string %}
+        {{_obj}}
+
+    {% elif "url" in _obj and "index" in _obj and "name" in _obj %}
+        {{APIReference(_obj)}}
+
+    {% elif "quantity" in _obj and "unit" in _obj%}
+        {{cost(_obj)}}
+
+    {% elif "bonus" in _obj%}
+        {{AbilityBonus(_obj)}}
+
+    {% else %}
+        {% for obj_key, obj_value in _obj.items() %}
+            {% if obj_value is mapping%}
+                {{Object(_obj[obj_key])}}
+            {% else %}
+                <p><b>{{String(obj_key)}}:</b> {{String(obj_value)}}</p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
 {% endmacro %}
 
 {% macro BackgroundFeature(_feature) %}

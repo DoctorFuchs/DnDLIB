@@ -15,11 +15,13 @@
 	{% block stylesheets %}{% endblock %}
 
 	<!--LOADING SCRIPTS-->
+	<script type="module" src="{{url_for(".asset_serve", folder="js", path="js.cookie.mjs")}}"></script>
+	<script type="module" src="{{url_for(".asset_serve", folder="js", path="sidebars.js")}}"></script>
 	{% block scripts %}{% endblock %}
 </head>
 <body>
-	<div class="w3-top w3-white">
-		<div class="w3-bar w3-content">
+	<div class="w3-top w3-white" style="z-index:3">
+		<div class="w3-bar">
 			<a href="/" class="w3-bar-item w3-hover-text-green">Home</a>
 			<div class="w3-dropdown-hover w3-right">
 				<p class="w3-hover-white w3-hover-text-green w3-hide-small">Offical basic rules</p>
@@ -33,6 +35,12 @@
 		</div>
 	</div>
 	<br><br>
+	<div id="toc" name="Table of contents" class="w3-sidebar w3-bar-block w3-hide-small w3-hide-medium" style="height: auto;">
+
+	</div>
+	<div id="bookmarks" class="w3-sidebar w3-bar-block w3-hide-small w3-hide-medium" style="height: auto; right: 0;">
+
+	</div>
 	<div class="w3-container w3-content" style="min-height: 100vh">
 		{% block content%}
 		{% endblock %}
@@ -45,7 +53,7 @@
 			<h1><a href="https://www.github.com/doctorfuchs/dndlib"><i class="fa fa-github-square"></i>GitHub</a><h1>
 		</div>
 		<div class="w3-quarter">
-			<h2><a href="licenses.html">Licenses</a></h2>
+			<h2><a href="/licenses.html">Licenses</a></h2>
 		</div>
 		<div class="w3-quarter">
 			<br>
