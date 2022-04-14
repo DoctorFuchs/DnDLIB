@@ -10,3 +10,7 @@
  	line-height: 1.8;
 	padding: 3em 10em 3em 5em;
 }
+
+.w3-sidebar {
+	width: auto !important;
+}

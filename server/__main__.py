@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from jinja2.exceptions import TemplateNotFound
 from server.utils.api import API
 from server.utils.path import get_path
+from server.utils import render
 import os
 import configparser
 from markdown import markdown
@@ -49,6 +50,7 @@ def api_serve(base_node:str, request_path:str):
             "base_node": base_node,
             "api_resp":resp.json(),
             "api": api,
+            "render": render,
             "site": config,
             "error_code": resp.status_code
         }), resp.status_code

@@ -1,11 +1,7 @@
 {% extends "base.html" %}
 {% import "/api/models.html" as model %}
-{% set head = ["name", "full_name"] %}
-{% set information_tags = ["weight", "cost", "quantity", "abbreviation"] %}
-{% set tags = ["equipment_category", "gear_category"] %}
-{% set bottom = ["class", "subclasses", "race"]%}
-{% set descriptions = ["desc"] %}
-{% set blocked = ["index", "url"]+ head + information_tags + descriptions + bottom + tags%}
+
+{# config #}
 
 
 {% macro render_single(key, value, headings=True) %}
@@ -58,7 +54,7 @@
     <table class="w3-table w3-striped">
         <tr>
         {% for key in json[0].keys() %}
-            {% if key in blocked%}
+            {% if key in render.BLOCKED%}
             {% else %}
                 <th>{{model.String(key)}}</th>
             {% endif %}
@@ -67,7 +63,7 @@
         {% for row in json %}
             <tr>
                 {% for key, value in row.items() %}
-                    {% if key in blocked%}
+                    {% if key in render.BLOCKED%}
                     {% else %}
                         <td>{{render_single("", value, headings=False)}}</td>
                     {% endif %}
@@ -88,15 +84,19 @@
             <h1>{{title}}</h1>
 
             <div class="w3-half">
-                {% for key in information_tags %}
+                {% for key in render.INFORMATION_TAGS %}
                     {% if not key in json %}
                     {% else %}
-                        {{render_single(key, json.get(key))}}
+                        {% if key == "components" %}
+                            {{render_single(key, ", ".join(json.get(key)))}}
+                        {% else %}
+                            {{render_single(key, json.get(key))}}
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
             </div>
             <div class="w3-container w3-rest">
-                {% for key in descriptions %}
+                {% for key in render.DESCRIPTIONS %}
                     {% if not key in json %}
                     {% else %}
                         {{render_single(key, json.get(key), false)}}
@@ -104,20 +104,20 @@
                 {% endfor %}
             </div>
             {% for key, value in json.items() %}
-                {% if key in blocked %}
+                {% if key in render.BLOCKED %}
                 {% else %}
                     {{render_single(key, value)}}
                 {% endif %}
             {% endfor %}
 
-            {% for key in bottom %}
+            {% for key in render.BOTTOM %}
                 {% if not key in json %}
                 {% else %}
                     {{render_single(key, json.get(key))}}
                 {% endif %}
             {% endfor %}
 
-            {% for key in tags %}
+            {% for key in render.TAGS %}
                 {% if not key in json %}
                 {% else %}
                     <div class="w3-tag" style="background-color:transparent;">{{render_single(key, json.get(key))}}</div>

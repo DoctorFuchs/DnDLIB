@@ -3,6 +3,7 @@ import Cookies from './js.cookie.mjs';
 class BookmarkManager {
     constructor() {
         this.bookmark_elem = document.getElementById("bookmarks");
+        this.state = "opened"
         if (Cookies.get("bookmarks") == null) {
             Cookies.set("bookmarks", JSON.stringify({}))
         }
@@ -17,7 +18,7 @@ class BookmarkManager {
         }
 
         let header = document.createElement("h1");
-        header.innerText = "Bookmarks";
+        header.innerHTML = "Bookmarks";
 
         this.bookmark_elem.innerHTML = "";
         this.bookmark_elem.appendChild(header);
@@ -83,6 +84,22 @@ class BookmarkManager {
         })
         return result;
     }
+
+    open() {
+        this.state = "opened";
+        document.getElementById("bookmarks").style.display = "block";
+        document.getElementById("bookmark-state-button").style.color = "black"
+    }
+
+    close() {
+        this.state = "closed"
+        document.getElementById("bookmarks").style.display = "none";
+        document.getElementById("bookmark-state-button").style.color = "white"
+    }
+
+    changeState() {
+        this.state=="opened"?this.close():this.open()
+    }
 }
 
 document.addEventListener("DOMContentLoaded", e => {
@@ -91,6 +108,11 @@ document.addEventListener("DOMContentLoaded", e => {
     Array.from(document.getElementsByClassName("bookmark-button")).forEach(element => {
         element.addEventListener("click", e => {
             BOOKMARK_MANAGER.change(e.target.getAttribute("name"), window.location.pathname);
+        })
+    })
+    Array.from(document.getElementsByClassName("bookmark-state-button")).forEach(element => {
+        element.addEventListener("click", e => {
+            BOOKMARK_MANAGER.changeState();
         })
     })
 })
