@@ -1,10 +1,11 @@
 # CHANGELOG
 ### future versions (TODOs)   
-- character builder
-- fix some bugs with the new render system
-- wiki for homebrew things
+- character builder (v1.0.0)
+- wiki for homebrew things (v1.0.0)
 
-
+### version 0.0.5 -> 0.0.6 (around 17th April 2022)
+- client-side rendering v0.0.1 of client side rendering
+- fixed some bugs
 
 ### version 0.0.4 -> 0.0.5 (around 5th April 2022)
 - first snapshot of a bookmark system
