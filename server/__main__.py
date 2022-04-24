@@ -31,9 +31,10 @@ def assertion_handler(error):
 @app.route("/api/<string:base_node>/<path:request_path>", methods=["GET", "POST"])
 def api_serve(base_node:str, request_path:str):
     request_path = request_path.strip()
+    full_request_path = "/api/"+base_node+"/"+request_path
 
     if request.method == "GET":
-        resp = api.get_raw(base_node+"/"+request_path)
+        resp = api.get_raw(full_request_path)
         template = ""
 
         if resp.status_code != 200:
@@ -46,6 +47,7 @@ def api_serve(base_node:str, request_path:str):
             template = f"/api/render.html"
 
         return render_template(template, **{
+            "full_request_path":full_request_path,
             "request_path":request_path,
             "base_node": base_node,
             "api_resp":resp.json(),
@@ -56,7 +58,7 @@ def api_serve(base_node:str, request_path:str):
         }), resp.status_code
 
     else:
-        return api.get(base_node+request_path)
+        return api.get(full_request_path)
 
 @app.route("/assets/<string:folder>/<path:path>")
 def asset_serve(folder, path):

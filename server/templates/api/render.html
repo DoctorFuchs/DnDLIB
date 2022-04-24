@@ -132,7 +132,9 @@
     </div>
 {% endmacro %}
 
+{% block scripts %}
+<script src="{{url_for('.asset_serve', folder='js', path='render.js')}}"></script>
+{% endblock %}
 {% block content %}
-{{main_render(api_resp)}}
-{{api_resp}}
+<api-response></api-response>
 {% endblock%}

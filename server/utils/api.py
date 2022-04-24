@@ -6,14 +6,15 @@ class API:
         self.cache = {}
 
     def cut(self, path):
-        if path.startswith("/api"):
-            return path.replace("/api", "", 1)
+        if path.startswith("/api/"):
+            return path.replace("/api/", "", 1)
         return path
 
     def get(self, path):
         return self.get_raw(path).json()
 
     def get_raw(self, path):
+        path = self.cut(path)
         if path in self.cache: return self.cache[path]
         resp = requests.get(self.api_url+path)
         self.cache[path] = resp

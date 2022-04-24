@@ -17,10 +17,11 @@
 	<!--LOADING SCRIPTS-->
 	<script type="module" src="{{url_for(".asset_serve", folder="js", path="js.cookie.mjs")}}"></script>
 	<script type="module" src="{{url_for(".asset_serve", folder="js", path="sidebars.js")}}"></script>
+	<script src="{{url_for(".asset_serve", folder="js", path="general.js")}}"></script>
 	{% block scripts %}{% endblock %}
 </head>
 <body>
-	<div class="w3-top w3-white" style="z-index:3">
+	<header class="w3-top w3-white" style="z-index:3">
 		<div class="w3-bar">
 			<a href="/" class="w3-bar-item w3-hover-text-green">Home</a>
 			<div class="w3-dropdown-hover w3-right">
@@ -33,19 +34,21 @@
 				</div>
 			</div>
 		</div>
-	</div>
-	<br><br>
-	<div id="toc" name="Table of contents" class="w3-sidebar w3-bar-block w3-hide-small w3-hide-medium w3-animate-left" style="height: auto;">
+	</header>
+	<main style="margin-top: 52.5px">
+		<div id="toc" name="Table of contents" class="w3-sidebar w3-bar-block w3-hide-small w3-hide-medium w3-animate-left" style="height: auto;">
 
-	</div>
-	<div id="bookmarks" class="w3-sidebar w3-bar-block w3-hide-small w3-hide-medium w3-animate-right" style="height: auto; right: 0;">
-		
-	</div>
-	<div class="w3-container w3-content" style="min-height: 100vh">
-		{% block content%}
-		{% endblock %}
-	</div>
-	<div class="w3-container w3-black w3-padding-16" style="min-height: 30vh;">
+		</div>
+		<div id="bookmarks" class="w3-sidebar w3-bar-block w3-hide-small w3-hide-medium w3-animate-right" style="height: auto; right: 0;">
+
+		</div>
+		<div class="w3-container w3-content" style="min-height: 100vh">
+			{% block content%}
+			{% endblock %}
+		</div>
+	</main>
+
+	<footer class="w3-container w3-black w3-padding-16" style="min-height: 30vh;">
 		<div class="w3-quarter">
 			<br>
 		</div>
@@ -58,5 +61,5 @@
 		<div class="w3-quarter">
 			<br>
 		</div>
-	</div>
+	</footer>
 </body>
