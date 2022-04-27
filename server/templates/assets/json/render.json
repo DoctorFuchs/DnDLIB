@@ -1,327 +1,359 @@
 {
-    "commons" : {
-        "default": {
-            "type":"string",
-            "group":"default",
-            "content": true,
-            "visible": true,
-            "single": false,
-            "headings": {
-                "visible": true,
-                "tag":"h2",
-                "classes": [],
-                "content": "$key"
-            },
-            "priority": 0,
-            "classes": []
+	"commons": {
+		"default": {
+			"type": "string",
+			"group": "default",
+			"content": true,
+			"visible": true,
+			"single": false,
+			"headings": {
+				"visible": true,
+				"tag": "h2",
+				"classes": [],
+				"content": "$key"
+			},
+			"priority": 0,
+			"classes": []
+		},
+		"heading": {
+			"group": "heading",
+			"single": true,
+			"headings": {
+				"visible": false
+			}
+		},
+		"subheading": {
+			"group": "subheading",
+			"headings": {
+				"visible": false
+			}
+		},
+		"description-1": {
+			"group": "description-top",
+			"headings": {
+				"tag": "h3"
+			}
+		},
+		"description-2-characteristic": {
+			"group": "description-bottom",
+			"headings": {
+				"visible": false
+			},
+			"priority": 1
+		},
+		"description-2": {
+			"group": "description-bottom",
+			"headings": {
+				"tag": "h2"
+			}
+		},
+		"description-3": {
+			"group": "skills",
+			"headings": {
+				"tag": "h5"
+			}
+		},
+		"description-4": {
+			"group": "description-half",
+			"headings": {
+				"tag": "h2"
+			}
+		},
+		"hidden": {
+			"group": "hidden",
+			"visible": false
+		}
+	},
+	"models": {
+		"name": {
+			"$ref": "#/commons/heading"
+		},
+		"full_name": {
+			"$ref": "#/commons/heading",
+			"priority": 1
+		},
+		"alignment": {
+			"$ref": "#/commons/description-1"
+		},
+		"armor_class": {
+			"$ref": "#/commons/description-1"
+		},
+		"challenge_rating": {
+			"$ref": "#/commons/description-1"
+		},
+		"languages": {
+			"$ref": "#/commons/description-1"
+		},
+		"senses": {
+			"$ref": "#/commons/description-1"
+		},
+		"weight": {
+			"$ref": "#/commons/description-1"
+		},
+		"cost": {
+			"$ref": "#/commons/description-1"
+		},
+		"quantity": {
+			"$ref": "#/commons/description-1"
+		},
+		"abbreviation": {
+			"$ref": "#/commons/description-1"
+		},
+		"material": {
+			"$ref": "#/commons/description-1"
+		},
+		"range": {
+			"$ref": "#/commons/description-1"
+		},
+		"components": {
+			"$ref": "#/commons/description-1"
+		},
+		"duration": {
+			"$ref": "#/commons/description-1"
+		},
+		"tool_category": {
+			"$ref": "#/commons/description-1"
+		},
+		"concentration": {
+			"$ref": "#/commons/description-1"
+		},
+		"level": {
+			"$ref": "#/commons/description-1"
+		},
+		"casting_time": {
+			"$ref": "#/commons/description-1"
+		},
+		"ritual": {
+			"$ref": "#/commons/description-1"
+		},
+		"school": {
+			"$ref": "#/commons/description-1"
+		},
+		"area_of_effect": {
+			"$ref": "#/commons/description-1"
+		},
+		"subclass_flavor": {
+			"$ref": "#/commons/description-1"
+		},
+		"_classes": {
+			"$ref": "#/commons/description-1"
+		},
+		"races": {
+			"$ref": "#/commons/description-1"
+		},
+		"traits": {
+			"$ref": "#/commons/description-1"
+		},
+		"subclasses": {
+			"$ref": "#/commons/description-1"
+		},
+		"race": {
+			"$ref": "#/commons/description-1"
+		},
+		"subraces": {
+			"$ref": "#/commons/description-1"
+		},
+		"equipment_category": {
+			"$ref": "#/commons/description-1"
+		},
+		"gear_category": {
+			"$ref": "#/commons/description-1"
+		},
+		"type": {
+			"$ref": "#/commons/description-1"
+		},
+		"xp": {
+			"$ref": "#/commons/description-1"
+		},
+		"size": {
+			"$ref": "#/commons/description-1"
+		},
+		"hit_dice": {
+			"$ref": "#/commons/description-1"
+		},
+		"hit_die": {
+			"$ref": "#/commons/description-1"
+		},
+		"hit_points": {
+			"$ref": "#/commons/description-1"
+		},
+		"speed": {
+			"$ref": "#/commons/description-1"
+		},
+		"saving_throws": {
+			"$ref": "#/commons/description-1"
+		},
+		"ability_score": {
+			"$ref": "#/commons/description-1"
+		},
+		"ability_bonuses": {
+			"$ref": "#/commons/description-1"
+		},
+		"prerequisites": {
+			"$ref": "#/commons/description-1"
+		},
+		"starting_proficiencies": {
+			"$ref": "#/commons/description-1"
+		},
+		"starting_equipment": {
+			"$ref": "#/commons/description-1"
+		},
+		"starting_equipment_options": {
+			"$ref": "#/commons/description-1"
+		},
+		"language_options": {
+			"$ref": "#/commons/description-1"
         },
-        "heading": {
-            "group": "heading",
-            "single": true,
-            "headings": {
-                "visible": false
-            }
-        },
-        "subheading": {
-            "group":"subheading",
-            "headings": {
-                "visible": false
-            }
-        },
-        "description-1": {
-            "group": "description-top",
-            "headings": {
-                "tag": "h5"
-            }
-        },
-        "description-2": {
-            "group": "description-bottom",
-            "headings": {
-                "tag": "h5"
-            }
-        },
-        "description-3": {
-            "group": "skills",
-            "headings": {
-                "tag": "h5"
-            }
-        },
-        "description-4": {
-            "group": "description-wide",
-            "headings": {
-                "tag": "h5"
-            }
-        },
-        "hidden": {
-            "group": "hidden",
-            "visible": false
-        }
-    },
-    "models": {
-        "name": {
-            "$ref": "#/commons/heading"
-        },
-        "full_name": {
-            "$ref": "#/commons/heading",
-            "priority":1
-        },
-        "alignment": {
-            "$ref": "#/commons/description-1"
-        },
-        "armor_class": {
-            "$ref": "#/commons/description-1"
-        },
-        "challenge_rating": {
-            "$ref": "#/commons/description-1"
-        },
-        "languages": {
-            "$ref": "#/commons/description-1"
-        },
-        "senses": {
-            "$ref": "#/commons/description-1"
-        },
-        "weight": {
-            "$ref": "#/commons/description-1"
-        },
-        "weight": {
-            "$ref": "#/commons/description-1"
-        },
-        "weight": {
-            "$ref": "#/commons/description-1"
-        },
-        "weight": {
-            "$ref": "#/commons/description-1"
-        },
-        "cost": {
-            "$ref": "#/commons/description-1"
-        },
-        "quantity": {
-            "$ref": "#/commons/description-1"
-        },
-        "abbreviation": {
-            "$ref": "#/commons/description-1"
-        },
-        "flaws": {
-            "$ref": "#/commons/description-1"
-        },
-        "ideals": {
-            "$ref": "#/commons/description-1"
-        },
-        "language-options": {
-            "$ref": "#/commons/description-1"
-        },
-        "personality_traits": {
-            "$ref": "#/commons/description-1"
-        },
-        "starting_equipment": {
-            "$ref": "#/commons/description-1"
-        },
-        "starting_equipment_options": {
-            "$ref": "#/commons/description-1"
-        },
-        "language_options": {
-            "$ref": "#/commons/description-1"
-        },
-        "starting_proficiencies": {
-            "$ref": "#/commons/description-1"
-        },
-        "abbreviation": {
-            "$ref": "#/commons/description-1"
-        },
-        "feature": {
-            "$ref": "#/commons/description-1"
-        },
-        "bonds": {
-            "$ref": "#/commons/description-1"
-        },
-        "material": {
-            "$ref": "#/commons/description-1"
-        },
-        "range": {
-            "$ref": "#/commons/description-1"
-        },
-        "components": {
-            "$ref": "#/commons/description-1"
-        },
-        "duration": {
-            "$ref": "#/commons/description-1"
-        },
-        "concentration": {
-            "$ref": "#/commons/description-1"
-        },
-        "level": {
-            "$ref": "#/commons/description-1"
-        },
-        "casting_time": {
-            "$ref": "#/commons/description-1"
-        },
-        "ritual": {
-            "$ref": "#/commons/description-1"
-        },
-        "school": {
-            "$ref": "#/commons/description-1"
-        },
-        "area_of_effect": {
-            "$ref": "#/commons/description-1"
-        },
-        "subclass_flavor": {
-            "$ref": "#/commons/description-1"
-        },
-        "_classes": {
-            "$ref": "#/commons/description-1"
-        },
-        "subclasses": {
-            "$ref": "#/commons/description-1"
-        },
-        "race": {
-            "$ref": "#/commons/description-1"
-        },
-        "subraces": {
-            "$ref": "#/commons/description-1"
-        },
-        "equipment_category": {
-            "$ref": "#/commons/description-1"
-        },
-        "gear_category": {
-            "$ref": "#/commons/description-1"
-        },
-        "type": {
-            "$ref": "#/commons/description-1"
-        },
-        "xp": {
-            "$ref": "#/commons/description-1"
-        },
-        "size": {
-            "$ref": "#/commons/description-1"
-        },
-        "hit_dice": {
-            "$ref": "#/commons/description-1"
-        },
-        "hit_die": {
-            "$ref": "#/commons/description-1"
-        },
-        "hit_points": {
-            "$ref": "#/commons/description-1"
-        },
-        "size": {
-            "$ref": "#/commons/description-1"
-        },
-        "speed": {
-            "$ref": "#/commons/description-1"
-        },
-        "saving_throws": {
-            "$ref": "#/commons/description-1"
-        },
-        "ability_score": {
-            "$ref": "#/commons/description-1"
-        },
-        "class": {
-            "$ref": "#/commons/description-1"
-        },
-        "prerequisites": {
-            "$ref": "#/commons/description-1"
-        },
+		"condition_immunities": {
+			"$ref": "#/commons/description-1"
+		},
+		"damage_immunities": {
+			"$ref": "#/commons/description-1"
+		},
+		"damage_resistances": {
+			"$ref": "#/commons/description-1"
+		},
+		"damage_vulnerabilities": {
+			"$ref": "#/commons/description-1"
+		},
 
-        "desc": {
-            "$ref": "#/commons/description-2",
-            "headings": {
-                "content": "description"
-            }
-        },
-        "higher_level": {
-            "$ref": "#/commons/description-2"
-        },
-        "skills": {
-            "$ref": "#/commons/description-2"
-        },
-        "spells": {
-            "$ref": "#/commons/description-2"
-        },
-        "count": {
-            "$ref": "#/commons/description-2",
-            "content": false,
-            "headings": {
-                "content": "Found $value results",
-                "tag": "h2"
-            }
-        },
-        "results": {
-            "$ref": "#/commons/description-2",
-            "headings": {
-                "tag": "h2"
-            }
-        },
-        "proficiency_choices": {
-            "$ref": "#/commons/description-2"
-        },
-        "multi_classing": {
-            "$ref": "#/commons/description-2"
-        },
-        "actions": {
-            "$ref": "#/commons/description-2"
-        },
-        "spellcasting": {
-            "$ref": "#/commons/description-2"
-        },
-        "class_levels": {
-            "$ref": "#/commons/description-2"
-        },
-        "vehicle_category": {
-            "$ref": "#/commons/description-2"
-        },
-        "equipment": {
-            "$ref": "#/commons/description-2"
-        },
-        "legendary_actions": {
-            "$ref": "#/commons/description-2"
-        },
-        "special_abilities": {
-            "$ref": "#/commons/description-2"
-        },
+		"desc": {
+			"$ref": "#/commons/description-2",
+			"headings": {
+				"content": "description"
+			},
+			"priority": -10
+		},
+		"language_desc": {
+			"$ref": "#/commons/description-2",
+			"headings": {
+				"content": "languages"
+			}
+		},
+		"size_description": {
+			"$ref": "#/commons/description-2",
+			"headings": {
+				"content": "size"
+			}
+		},
+		"alignment": {
+			"$ref": "#/commons/description-1"
+		},
+		"higher_level": {
+			"$ref": "#/commons/description-2"
+		},
+		"age": {
+			"$ref": "#/commons/description-2"
+		},
+		"skills": {
+			"$ref": "#/commons/description-2"
+		},
+		"spells": {
+			"$ref": "#/commons/description-2"
+		},
+		"count": {
+			"$ref": "#/commons/description-2",
+			"content": false,
+			"headings": {
+				"content": "Found $value results",
+				"tag": "h2"
+			}
+		},
+		"results": {
+			"$ref": "#/commons/description-2",
+			"headings": {
+				"tag": "h2"
+			}
+		},
+		"proficiency_choices": {
+			"$ref": "#/commons/description-2"
+		},
+		"multi_classing": {
+			"$ref": "#/commons/description-2"
+		},
+		"actions": {
+			"$ref": "#/commons/description-2"
+		},
+		"spellcasting": {
+			"$ref": "#/commons/description-2"
+		},
+		"class_levels": {
+			"$ref": "#/commons/description-2"
+		},
+		"vehicle_category": {
+			"$ref": "#/commons/description-2"
+		},
+		"equipment": {
+			"$ref": "#/commons/description-2"
+		},
+		"legendary_actions": {
+			"$ref": "#/commons/description-2"
+		},
+		"feature": {
+			"$ref": "#/commons/description-2"
+		},
+		"special": {
+			"$ref": "#/commons/description-2"
+		},
+		"contents": {
+			"$ref": "#/commons/description-2"
+		},
+		"properties": {
+			"$ref": "#/commons/description-2"
+		},
 
-        "charisma": {
-            "$ref": "#/commons/description-3"
-        },
-        "constitution": {
-            "$ref": "#/commons/description-3"
-        },
-        "dexterity": {
-            "$ref": "#/commons/description-3"
-        },
-        "intelligence": {
-            "$ref": "#/commons/description-3"
-        },
-        "strength": {
-            "$ref": "#/commons/description-3"
-        },
-        "wisdom": {
-            "$ref": "#/commons/description-3"
-        },
+		"bonds": {
+			"$ref": "#/commons/description-2-characteristic",
+            "headings": {
+                "content": "Suggested Characteristics",
+                "tag": "h2",
+                "visible": true
+            }
+		},
+		"flaws": {
+			"$ref": "#/commons/description-2-characteristic"
+		},
+		"ideals": {
+			"$ref": "#/commons/description-2-characteristic"
+		},
+		"personality_traits": {
+			"$ref": "#/commons/description-2-characteristic"
+		},
 
-        "condition_immunities": {
-            "$ref": "#/commons/description-4"
-        },
-        "damage_immunities": {
-            "$ref": "#/commons/description-4"
-        },
-        "damage_resistances": {
-            "$ref": "#/commons/description-4"
-        },
-        "damage_vulnerabilities": {
-            "$ref": "#/commons/description-4"
-        },
-        "proficiencies": {
-            "$ref": "#/commons/description-4"
-        },
+		"charisma": {
+			"$ref": "#/commons/description-3"
+		},
+		"constitution": {
+			"$ref": "#/commons/description-3"
+		},
+		"dexterity": {
+			"$ref": "#/commons/description-3"
+		},
+		"intelligence": {
+			"$ref": "#/commons/description-3"
+		},
+		"strength": {
+			"$ref": "#/commons/description-3"
+		},
+		"wisdom": {
+			"$ref": "#/commons/description-3"
+		},
 
-        "index": {
-            "$ref": "#/commons/hidden"
-        },
-        "url": {
-            "$ref": "#/commons/hidden"
-        },
-        "_id": {
-            "$ref": "#/commons/hidden"
-        }
-    }
+		"proficiencies": {
+			"$ref": "#/commons/description-4"
+		},
+		"special_abilities": {
+			"$ref": "#/commons/description-4"
+		},
+
+		"index": {
+			"$ref": "#/commons/hidden"
+		},
+		"url": {
+			"$ref": "#/commons/hidden"
+		},
+		"_id": {
+			"$ref": "#/commons/hidden"
+		}
+	}
 }

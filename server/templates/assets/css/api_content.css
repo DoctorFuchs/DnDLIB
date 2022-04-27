@@ -13,9 +13,10 @@
     grid-template-columns: auto;
 }
 
-.heading article,
+#heading-group article div,
 section h1 {
-
+    font-size: 30px;
+    font-weight: bold;
 }
 
 section h2 {
@@ -55,38 +56,48 @@ article {
     text-align: center
 }
 
-div#content div {
+div#content > div {
     padding-bottom: 12px;
+    border-bottom: 5px solid black;
+
+    margin-bottom: 10px;
 }
 
 #heading-group {
     order: -5;
-
-    border-bottom: 5px solid black;
 }
 
 #description-top-group {
     order: -4;
 
-    border-bottom: 5px solid black;
-
     display: grid;
     grid-gap: 10px;
-    grid-template-columns: auto auto auto auto;
+    grid-template-columns: 33% 33% 33%;
 }
 
 #skills-group {
     order: -3;
-
-    border-bottom: 5px solid black;
 
     display: grid;
     grid-gap: 10px;
     grid-template-columns: auto auto auto auto auto auto;
 }
 
-#description-bottom-group {
+#description-half-group {
     order: -2;
+
+
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: auto auto;
+}
+
+#description-bottom-group {
+    order: -1;
+
+    display: grid;
+    grid-gap: 0;
+    grid-template-columns: auto;
 }
 
 div {
@@ -106,4 +117,44 @@ div {
 
 .description-bottom {
 
+}
+
+select {
+    width: 100%;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    display: table;
+
+    border: 1px solid #ccc;
+    border-bottom: 1px solid #ddd;
+
+    padding-left: 16px;
+    margin: 20px 0;
+}
+
+td, th {
+    padding: 8px 8px;
+    display: table-cell;
+    text-align: left;
+    vertical-align: top;
+    border-left: 1px solid #ccc;
+    border-bottom: 1px solid #ddd;
+}
+
+td:first-child,
+th:first-child {
+    width: 10%;
+}
+
+
+tr:nth-child(odd) {
+    background-color: #fff
+}
+
+tr:nth-child(even) {
+    background-color: #f1f1f1
 }

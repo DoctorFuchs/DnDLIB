@@ -85,23 +85,303 @@ class APIResponse extends HTMLElement {
         return elem;
     }
 
-    getValue(value) {
-        if (Array.isArray(value)) {
+    generateAreaOfEffect(value) {
+        var elem = document.createElement("div");
+        elem.classList.add("area-of-effect");
+        elem.innerHTML = `${value.size} ft (${value.type})`
+        return elem;
+    }
+
+    generateAlignmentChoice(value) {
+        var alignments = Array();
+        value.alignments.forEach(alignment => {
+            alignments.push(alignment.name)
+        })
+
+        if (alignments.length==9) {
+            alignments = ["Any Alignment"];
+        }
+
+        var elem = document.createElement("p");
+        elem.innerHTML = `${value.desc} (${alignments.join(", ")})`
+        return elem;
+    }
+
+    generateEquipment(value) {
+        value.equipment.name = value.quantity + " " + value.equipment.name
+        return this.getValue("equipment", value.equipment)
+    }
+
+    generateEquipmentChoice(value) {
+        var getOption = (value, selected=false) => {
+            var option = document.createElement("option");
+            option.innerHTML = value;
+            option.value = value;
+            option.selected = selected;
+            option.disabled = !selected;
+            return option;
+        }
+        var choicer = document.createElement("select");
+        choicer.appendChild(getOption(`Select ${value.choose} of`, true));
+
+        Object.values(value.from).forEach(value => {
+            var getEquipmentDescription = (_value) => {
+                if ("equipment_category" in _value) {
+                    return _value.equipment_category.name;
+                }
+                else if ("equipment" in _value) {
+                    return _value.quantity + " " + _value.equipment.name;
+                }
+                else if ("equipment_option" in _value) {
+                    return  _value.equipment_option.choose + " " +
+                            getEquipmentDescription(_value.equipment_option.from);
+                }
+                else if (Array.isArray(_value) || this.isObject(_value)) {
+                    if (this.isObject(_value)) {
+                        _value = Object.values(_value);
+                    }
+                    var result = [];
+                    _value.forEach(item => {
+                        result.push(getEquipmentDescription(item));
+                    })
+                    return result.join(" and ");
+                }
+            }
+            choicer.appendChild(getOption(getEquipmentDescription(value)));
+
+        })
+
+        return choicer;
+    }
+
+    generateFeature(value) {
+        var elem = document.createElement("div");
+        elem.innerHTML += `<h3>${value.name}</h3>`;
+        elem.innerHTML += Array.isArray(value.desc)? value.desc.join("<br><br>"): value.desc;
+        return elem;
+    }
+
+    generateCost(value) {
+        var elem = document.createElement("div");
+        elem.innerHTML = `${value.quantity} ${this.makeReadable(value.unit)}`;
+        return elem;
+    }
+
+    generateLanguageChoice(value) {
+        var getOption = (value, selected=false) => {
+            var option = document.createElement("option");
+            option.innerHTML = value;
+            option.value = value;
+            option.selected = selected;
+            option.disabled = !selected;
+            return option;
+        }
+        var choicer = document.createElement("select");
+        choicer.appendChild(getOption(`Select ${value.choose} of`, true));
+
+        Object.values(value.from).forEach(value => {
+            choicer.appendChild(getOption(value.name));
+        })
+
+        return choicer;
+    }
+
+    generateAttackChoice(value) {
+        var elem = document.createElement("div");
+        elem.innerHTML += `<p>Choose ${value.choose}: </p>`;
+
+        var list = document.createElement("ul");
+        var addToList = (content) => {
+            var item = document.createElement("li");
+            item.innerHTML = content;
+            list.appendChild(item);
+        }
+
+        var generate = (attack) => {
+            list.innerHTML += `<li>Attack ${attack.count} times with ${attack.name} (${attack.type})</li>`
+        }
+
+        value.from.forEach(_value => {
+            if (this.isObject(_value)) {
+                Object.values(_value).forEach(attack => {
+                    generate(attack);
+                });
+            }
+            else {
+                generate(_value);
+            }
+        })
+        elem.appendChild(list)
+        return elem;
+    }
+
+    generateItem(value) {
+        value.item.name = value.quantity + " " + value.item.name;
+        return this.generateApiReference(value.item);
+    }
+
+    generatePreAbility(value) {
+        value.ability_score.name = ">" + value.minimum_score + " " + value.ability_score.name;
+        return this.generateApiReference(value.ability_score);
+    }
+
+    generateAbilityBonus(value) {
+        value.ability_score.name = "+" + value.bonus + " " + value.ability_score.name;
+        return this.generateApiReference(value.ability_score);
+    }
+
+    generateProfiency(value) {
+        value.proficiency.name = "+" + value.value + " " + value.proficiency.name;
+        return this.generateApiReference(value.proficiency);
+    }
+
+    generateChoice(value) {
+        var elem = document.createElement("div");
+        elem.classList.add("choice");
+
+        //elem.innerHTML = `Choose ${value.choose} ${value.type}`
+        if (value.type == null) {
+            value.type = "attack";
+        }
+
+        switch (value.type) {
+            case "bonds":
+            case "ideals":
+            case "personality_traits":
+            case "flaws": {
+                var table = document.createElement("table");
+                var tbody = document.createElement("tbody");
+                var thead = document.createElement("thead");
+
+                var row = document.createElement("tr");
+                var col1 = document.createElement("th");
+                var col2 = document.createElement("th");
+
+                col1.innerText = `d${value.from.length}`;
+                col2.innerHTML = this.makeReadable(value.type);
+                row.appendChild(col1);
+                row.appendChild(col2);
+
+                thead.appendChild(row);
+
+                Object.entries(value.from).forEach(choose => {
+                    var [_key, _value] = choose;
+
+                    var row = document.createElement("tr");
+                    var col1 = document.createElement("td");
+                    var col2 = document.createElement("td");
+
+                    col1.innerText = _key - "-1";
+                    this.getValue(_key, _value).forEach(item => { col2.appendChild(item) })
+
+                    row.appendChild(col1);
+                    row.appendChild(col2);
+
+                    tbody.appendChild(row);
+                });
+                table.appendChild(thead);
+                table.appendChild(tbody);
+                elem.appendChild(table)
+                return elem;
+            }
+            case "equipment": {
+                return this.generateEquipmentChoice(value);
+            }
+            case "languages": {
+                return this.generateLanguageChoice(value);
+            }
+            case "attack": {
+                return this.generateAttackChoice(value);
+            }
+            default: {
+                console.log(value)
+            }
+
+        }
+    }
+
+    getValue(key, value) {
+        if (Array.isArray(value) && value.length != 0) {
             var result = Array();
-            value.forEach(item => {
-                result = result.concat(this.getValue(item));
-            });
+            switch (typeof value[0]) {
+                case "string": {
+                    var elem = document.createElement("div");
+                    elem.innerHTML = value.join(", ");
+                    result = Array.of(elem);
+                    break;
+                }
+                case "object": {
+                    value.forEach(item => {
+                        result = result.concat(this.getValue(key, item));
+                    });
+                    break;
+                }
+            }
             return result;
         }
-        else if (!this.isObject(value)) {
-            var elem = document.createElement("div");
-            elem.innerHTML = value;
-            return Array.of(elem);
+        else if (this.isObject(value)) {
+            switch (Object.keys(value).toString()) {
+                case "index,name,url": {
+                    return Array.of(this.generateApiReference(value));
+                }
+                case "size,type": {
+                    return Array.of(this.generateAreaOfEffect(value));
+                }
+                case "choose,from,type": {
+                    return Array.of(this.generateChoice(value));
+                }
+                case "alignments,desc": {
+                    return Array.of(this.generateAlignmentChoice(value))
+                }
+                case "equipment,quantity": {
+                    return this.generateEquipment(value)
+                }
+                case "desc,name": {
+                    return Array.of(this.generateFeature(value));
+                }
+                case "quantity,unit": {
+                    return Array.of(this.generateCost(value))
+                }
+                case "item,quantity": {
+                    return Array.of(this.generateItem(value))
+                }
+                case "ability_score,minimum_score": {
+                    return Array.of(this.generatePreAbility(value))
+                }
+                case "ability_score,bonus": {
+                    return Array.of(this.generateAbilityBonus(value));
+                }
+                case "proficiency,value": {
+                    return Array.of(this.generateProfiency(value))
+                }
+                case "desc,name,options": {
+                    var result = [this.generateFeature(value)];
+                    result.push(this.generateChoice(value.options));
+                    return result;
+                }
+            }
+            switch (key) {
+                case "senses":
+                case "speed": {
+                    var result = [];
+                    Object.entries(value).forEach(entry => {
+                        const [_key, _value] = entry;
+                        result.push(`${this.makeReadable(_key)}: ${_value}`);
+                    })
+                    var elem = document.createElement("div");
+                    elem.innerHTML = result.join("<br>");
+                    return Array.of(elem)
+                }
+                default: {
+                    console.log(value)
+                }
+            }
         }
-        else if ("url" in value && "name" in value && "index" in value) {
-            return Array.of(this.generateApiReference(value));
-        }
-        return []
+
+        var elem = document.createElement("div");
+        elem.innerHTML = value;
+        elem.innerText = this.makeReadable(elem.innerText);
+        return Array.of(elem);
     }
 
     render() {
@@ -127,15 +407,22 @@ class APIResponse extends HTMLElement {
             if (heading != null) { elem.appendChild(heading) }
 
             var content_elem = document.createElement("article");
-            // TODO: value rendering for objects
             if (Array.isArray(value) && "name" in value.keys()) { value.sort((a, b) => {
                 a.name.localeCompare(b.name)
             })}
             if (model.content) {
-                this.getValue(value).forEach(item => { content_elem.appendChild(item); })
+                this.getValue(key, value).forEach(item => {
+                    try {
+                        content_elem.appendChild(item)
+                    } catch (TypeError) {
+                        console.log(item);
+                    }
+                })
             }
 
-            //if (content_elem.innerText == "") { return; }
+            if (model.group == "default") { console.log("default:", key, value) }
+
+            if (content_elem.innerText == "") { return; }
 
             elem.appendChild(content_elem);
 

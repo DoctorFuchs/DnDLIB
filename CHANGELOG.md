@@ -3,6 +3,12 @@
 - character builder (v1.0.0)
 - wiki for homebrew things (v1.0.0)
 
+
+### version 0.0.6 -> 0.0.7 (around 25th April 2022)
+- bug fixes
+- render-system v0.0.2:
+    - more renderable values
+
 ### version 0.0.5 -> 0.0.6 (around 17th April 2022)
 - client-side rendering v0.0.1 of client side rendering
 - fixed some bugs
