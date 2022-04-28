@@ -15,7 +15,7 @@ assert config.read("config.ini") != [], "CONFIG FILE WAS NOT READED"
 mimetypes.add_type("text/javascript", ".js")
 
 app = Flask(__name__)
-api = API("https://www.dnd5eapi.co/api/")
+api = API(config.get("API", "hostname"))
 
 app.jinja_env.globals.update(markdown=markdown)
 
