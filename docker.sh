@@ -1,7 +1,8 @@
 git checkout docker-test
 git pull
 
-sudo ufw allow 80/tcp
+sudo ufw allow 80
+sudo ufw allow http
 
 python3 -m venv env
 source env/bin/activate
