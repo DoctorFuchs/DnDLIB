@@ -1,7 +1,7 @@
 git checkout docker-test
 git pull
 
-firewall-cmd --add-port 80/tcp
+sudo ufw allow 80/tcp
 
 python3 -m venv env
 source env/bin/activate
