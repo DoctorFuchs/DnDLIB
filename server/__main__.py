@@ -10,8 +10,6 @@ import configparser
 from markdown import markdown
 import mimetypes
 
-config = configparser.ConfigParser()
-assert config.read("config.ini") != [], "CONFIG FILE WAS NOT READED"
 
 mimetypes.add_type("text/javascript", ".js")
 
@@ -86,7 +84,10 @@ if __name__ == "__main__":
     parser.add_argument("--local")
     args = parser.parse_args()
 
-    config["API"]["hostname"] = "http://localhost:3000" if args.local else config.get("API", "hostname")
+    config = configparser.ConfigParser()
+    assert config.read("config.ini") != [], "CONFIG FILE WAS NOT READED"
+    if args.local: config.read("config.local.ini")
+
     api = API(config.get("API", "hostname"))
     print("API connection to "+api.api_url)
 
