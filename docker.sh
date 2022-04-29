@@ -1,3 +1,6 @@
+git checkout docker-test
+git pull
+
 python3 -m venv env
 cd /env/bin
 source activate
@@ -19,9 +22,6 @@ docker-compose pull
 docker-compose up --build &
 
 cd ..
-
-git checkout docker-test
-git pull
 
 pip3 install -r requirements.txt
 
