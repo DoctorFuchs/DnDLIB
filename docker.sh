@@ -1,10 +1,12 @@
 git checkout docker-test
 git pull
 
+firewall-cmd --add-port 80/tcp
+
 python3 -m venv env
 source env/bin/activate
 
-if [ ! -d "/5e-srd-api" ]
+if [ ! -d "/api" ]
 then
     git clone https://github.com/5e-bits/5e-srd-api api
 fi
