@@ -2,11 +2,7 @@ git checkout docker-test
 git pull
 
 python3 -m venv env
-cd /env/bin
-source activate
-
-cd ..
-cd ..
+source env/bin/activate
 
 if [ ! -d "/5e-srd-api" ]
 then
