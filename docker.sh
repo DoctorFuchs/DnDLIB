@@ -1,5 +1,9 @@
 python3 -m venv env
-source /env/bin/activate
+cd /env/bin
+source activate
+
+cd ..
+cd ..
 
 if [ ! -d "/5e-srd-api" ]
 then
@@ -21,6 +25,6 @@ git pull
 
 pip3 install -r requirements.txt
 
-python3 -m server --local
+python3 -m server --local true
 
 deactivate
