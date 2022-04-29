@@ -1,24 +1,26 @@
+python3 -m venv env
+source /env/bin/activate
+
 if [ ! -d "/5e-srd-api" ]
 then
-    git clone https://github.com/5e-bits/5e-srd-api
+    git clone https://github.com/5e-bits/5e-srd-api api
 fi
 
-if [ ! -d "/DNDLib" ]
-then
-    git clone https://github.com/doctorfuchs/DNDLib
-fi
-
-cd 5e-srd-api
+cd api
 
 # update
 git pull
 docker-compose pull
 
-docker-compose up --build ?
+docker-compose up --build &
 
 cd ..
-cd DNDLib
 
+git checkout docker-test
 git pull
 
+pip3 install -r requirements.txt
+
 python3 -m server --local
+
+deactivate
