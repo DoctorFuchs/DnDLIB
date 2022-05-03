@@ -192,6 +192,17 @@
 		"prerequisites": {
 			"$ref": "#/commons/description-1"
 		},
+		"alignment": {
+			"$ref": "#/commons/description-1"
+		},
+		"class": {
+			"$ref": "#/commons/description-1",
+			"priority": 3
+		},
+		"subclass": {
+			"$ref": "#/commons/description-1",
+			"priority": 3
+		},
 		"starting_proficiencies": {
 			"$ref": "#/commons/description-1"
 		},
@@ -235,9 +246,6 @@
 			"headings": {
 				"content": "size"
 			}
-		},
-		"alignment": {
-			"$ref": "#/commons/description-1"
 		},
 		"higher_level": {
 			"$ref": "#/commons/description-2"

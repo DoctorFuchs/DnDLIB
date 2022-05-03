@@ -167,7 +167,7 @@ class APIResponse extends HTMLElement {
         return elem;
     }
 
-    generateLanguageChoice(value) {
+    generateDefaultChoice(value) {
         var getOption = (value, selected=false) => {
             var option = document.createElement("option");
             option.innerHTML = value;
@@ -235,6 +235,43 @@ class APIResponse extends HTMLElement {
         return this.generateApiReference(value.proficiency);
     }
 
+    generateMulticlassing(value) {
+        var elem = document.createElement("div");
+        var add_header = (text) => {
+            var header = document.createElement("h3");
+            header.innerText = text;
+            elem.appendChild(header)
+        }
+
+        if (value.prerequisites) {
+            add_header("Prerequisites: ");
+
+            Array.from(value.prerequisites).forEach(pre => {
+                elem.appendChild(this.generatePreAbility(pre));
+            })
+
+            elem.innerHTML += "<br>";
+        }
+        if (value.proficiencies) {
+            add_header("Proficiencies: ");
+
+            Array.from(value.proficiencies).forEach(pro => {
+                elem.appendChild(this.generateApiReference(pro));
+            })
+            elem.innerHTML += "<br>";
+        }
+        if (value.proficiency_choices) {
+            add_header("Proficiency Choices: ");
+
+            Array.from(value.proficiency_choices).forEach(choice => {
+                elem.appendChild(this.generateChoice(choice))
+            })
+            elem.innerHTML += "<br>";
+        }
+        return elem
+
+    }
+
     generateChoice(value) {
         var elem = document.createElement("div");
         elem.classList.add("choice");
@@ -287,14 +324,12 @@ class APIResponse extends HTMLElement {
             case "equipment": {
                 return this.generateEquipmentChoice(value);
             }
-            case "languages": {
-                return this.generateLanguageChoice(value);
-            }
             case "attack": {
                 return this.generateAttackChoice(value);
             }
             default: {
                 console.log(value)
+                return this.generateDefaultChoice(value);
             }
 
         }
@@ -359,6 +394,8 @@ class APIResponse extends HTMLElement {
                     result.push(this.generateChoice(value.options));
                     return result;
                 }
+                case "prerequisites,proficiencies": {
+                    }
             }
             switch (key) {
                 case "senses":
@@ -371,6 +408,10 @@ class APIResponse extends HTMLElement {
                     var elem = document.createElement("div");
                     elem.innerHTML = result.join("<br>");
                     return Array.of(elem)
+                }
+                case "multi_classing": {
+                    console.log(value);
+                    return Array.of(this.generateMulticlassing(value));
                 }
                 default: {
                     console.log(value)
@@ -411,6 +452,11 @@ class APIResponse extends HTMLElement {
                 a.name.localeCompare(b.name)
             })}
             if (model.content) {
+                /*if (key == "results") {
+                    value.sort((a, b) => {
+                        a.name.compareLocal(b.name);
+                    })
+                }*/
                 this.getValue(key, value).forEach(item => {
                     try {
                         content_elem.appendChild(item)
