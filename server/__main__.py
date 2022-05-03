@@ -5,17 +5,15 @@ from server.utils.api import API
 from server.utils.path import get_path
 from server.utils import render
 import os
+import argparse
 import configparser
 from markdown import markdown
 import mimetypes
 
-config = configparser.ConfigParser()
-assert config.read("config.ini") != [], "CONFIG FILE WAS NOT READED"
 
 mimetypes.add_type("text/javascript", ".js")
 
 app = Flask(__name__)
-api = API(config.get("API", "hostname"))
 
 app.jinja_env.globals.update(markdown=markdown)
 
@@ -82,4 +80,15 @@ def frontend_serve(request_path):
             }), 404
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--local")
+    args = parser.parse_args()
+
+    config = configparser.ConfigParser()
+    assert config.read("config.ini") != [], "CONFIG FILE WAS NOT READED"
+    if args.local: config.read("config.local.ini")
+
+    api = API(config.get("API", "hostname"))
+    print("API connection to "+api.api_url)
+
     app.run(config.get("SERVER", "hostname"), config.getint("SERVER", "port"), debug=True)

@@ -452,11 +452,23 @@ class APIResponse extends HTMLElement {
                 a.name.localeCompare(b.name)
             })}
             if (model.content) {
+<<<<<<< HEAD
                 /*if (key == "results") {
                     value.sort((a, b) => {
                         a.name.compareLocal(b.name);
                     })
                 }*/
+=======
+                if (key == "results" && window.location.pathname == "/api/features") {
+                    value.sort((a, b) => {
+                        a.name = this.makeReadable(a.index);
+                        a.name = a.name.toString().replaceAll("-", " ")
+                        b.name = this.makeReadable(b.index);
+                        b.name = b.name.toString().replaceAll("-", " ")
+                        a.name.localeCompare(b.name);
+                      })
+                }
+>>>>>>> 4dc16dff5252edb6456954c69c33f6cba167ff57
                 this.getValue(key, value).forEach(item => {
                     try {
                         content_elem.appendChild(item)
