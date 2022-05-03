@@ -448,9 +448,6 @@ class APIResponse extends HTMLElement {
             if (heading != null) { elem.appendChild(heading) }
 
             var content_elem = document.createElement("article");
-            if (Array.isArray(value) && "name" in value.keys()) { value.sort((a, b) => {
-                a.name.localeCompare(b.name)
-            })}
             if (model.content) {
                 if (key == "results" && window.location.pathname == "/api/features") {
                     value.sort((a, b) => {
