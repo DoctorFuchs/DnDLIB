@@ -56,7 +56,7 @@ def api_serve(base_node:str, request_path:str):
         }), resp.status_code
 
     else:
-        return api.get(full_request_path)
+        return jsonify(api.get(full_request_path))
 
 @app.route("/assets/<string:folder>/<path:path>")
 def asset_serve(folder, path):

@@ -28,7 +28,7 @@ class APIResponse extends HTMLElement {
     createEnviroment(callback) {
         getJson("/assets/json/render.json", "GET", resp => {
             this.models = resp;
-            getJson(window.location.href, "POST", resp => {
+            getJson(this.dataset.url||window.location.href, "POST", resp => {
                 this.json = resp;
                 callback();
             })
@@ -394,8 +394,6 @@ class APIResponse extends HTMLElement {
                     result.push(this.generateChoice(value.options));
                     return result;
                 }
-                case "prerequisites,proficiencies": {
-                    }
             }
             switch (key) {
                 case "senses":
@@ -418,7 +416,13 @@ class APIResponse extends HTMLElement {
                 }
             }
         }
-
+        else if (typeof value == "string") {
+            if (value.startsWith("/api/")) {
+                var elem = document.createElement("api-response");
+                elem.dataset.url = value;
+                return Array.of(elem);
+            }
+        }
         var elem = document.createElement("div");
         elem.innerHTML = value;
         elem.innerText = this.makeReadable(elem.innerText);
@@ -454,7 +458,7 @@ class APIResponse extends HTMLElement {
                         a.name = this.makeReadable(a.index);
                         b.name = this.makeReadable(b.index);
                         a.name.localeCompare(b.name);
-                      })
+                    })
                 }
                 this.getValue(key, value).forEach(item => {
                     try {
