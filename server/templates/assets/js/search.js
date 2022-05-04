@@ -1,15 +1,33 @@
-function search() {
-  var input, filter, ul, li, a, i;
-  input = document.getElementById("searchbar");
-  filter = input.value.toUpperCase();
-  ul = document.getElementById("item_list");
-  li = ul.getElementsByClassName("item");
-  for (i = 0; i < li.length; i++) {
-    txtValue = li[i].textContent || li[i].innerText;
-    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-      li[i].style.display = "";
-    } else {
-      li[i].style.display = "none";
+class SearchBar extends HTMLElement {
+    constructor() {
+        super();
+
+        // Attaches a shadow root to your custom element.
+        const shadowRoot = this.attachShadow({mode: 'open'});
+
+        // Defines the "real" input element.
+        let inputElement = document.createElement('input');
+        inputElement.setAttribute('type', this.getAttribute('type'));
+        inputElement.id = "searchbar-input";
+        inputElement.style.width = "100%";
+        inputElement.placeholder = "Search...";
+
+        inputElement.onkeyup =  e => {
+            var targets = this.getRootNode().host.shadowRoot.getElementById("results").getElementsByTagName("article")[0].children;
+            var filter = inputElement.value.toUpperCase();
+            for (let i = 0; i < targets.length; i++) {
+                var txtValue = targets[i].textContent || targets[i].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    targets[i].style.display = "";
+                } else {
+                    targets[i].style.display = "none";
+                }
+            }
+        }
+
+        // Appends the input into the shadow root.
+        shadowRoot.appendChild(inputElement);
     }
-  }
 }
+
+customElements.define('search-bar', SearchBar);

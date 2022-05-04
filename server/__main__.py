@@ -37,12 +37,9 @@ def api_serve(base_node:str, request_path:str):
 
         if resp.status_code != 200:
             template = "error.html"
-
-        elif request_path == "":
-            template = "/api/list.html"
-
+            
         else:
-            template = f"/api/render.html"
+            template = f"/api_render.html"
 
         return render_template(template, **{
             "full_request_path":full_request_path,

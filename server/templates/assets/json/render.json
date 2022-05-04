@@ -105,6 +105,12 @@
 		"range": {
 			"$ref": "#/commons/description-1"
 		},
+		"subtype": {
+			"$ref": "#/commons/description-1"
+		},
+		"forms": {
+			"$ref": "#/commons/description-1"
+		},
 		"components": {
 			"$ref": "#/commons/description-1"
 		},

@@ -23,6 +23,10 @@ class APIResponse extends HTMLElement {
         this.createEnviroment(() => {
             this.render();
         })
+
+        var script = document.createElement("script");
+        script.src = "/assets/js/search.js";
+        this.shadowRoot.appendChild(script);
     }
 
     createEnviroment(callback) {
@@ -453,12 +457,15 @@ class APIResponse extends HTMLElement {
 
             var content_elem = document.createElement("article");
             if (model.content) {
-                if (key == "results" && window.location.pathname == "/api/features") {
-                    value.sort((a, b) => {
-                        a.name = this.makeReadable(a.index);
-                        b.name = this.makeReadable(b.index);
-                        a.name.localeCompare(b.name);
-                    })
+                if (key == "results") {
+                    elem.appendChild(document.createElement("search-bar"))
+                    if (window.location.pathname == "/api/features") {
+                        value.sort((a, b) => {
+                            a.name = this.makeReadable(a.index);
+                            b.name = this.makeReadable(b.index);
+                            a.name.localeCompare(b.name);
+                        })
+                    }
                 }
                 this.getValue(key, value).forEach(item => {
                     try {
