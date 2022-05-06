@@ -3,7 +3,6 @@ from flask import Flask, request, jsonify, send_from_directory
 from jinja2.exceptions import TemplateNotFound
 from server.utils.api import API
 from server.utils.path import get_path
-from server.utils import render
 import os
 import argparse
 import configparser
@@ -37,7 +36,7 @@ def api_serve(base_node:str, request_path:str):
 
         if resp.status_code != 200:
             template = "error.html"
-            
+
         else:
             template = f"/api_render.html"
 
@@ -47,7 +46,6 @@ def api_serve(base_node:str, request_path:str):
             "base_node": base_node,
             "api_resp":resp.json(),
             "api": api,
-            "render": render,
             "site": config,
             "error_code": resp.status_code
         }), resp.status_code

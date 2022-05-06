@@ -102,6 +102,9 @@
 		"material": {
 			"$ref": "#/commons/description-1"
 		},
+		"dc": {
+			"$ref": "#/commons/description-1"
+		},
 		"range": {
 			"$ref": "#/commons/description-1"
 		},
@@ -279,9 +282,6 @@
 				"tag": "h2"
 			}
 		},
-		"proficiency_choices": {
-			"$ref": "#/commons/description-2"
-		},
 		"multi_classing": {
 			"$ref": "#/commons/description-2"
 		},
@@ -354,6 +354,9 @@
 		},
 
 		"proficiencies": {
+			"$ref": "#/commons/description-4"
+		},
+		"proficiency_choices": {
 			"$ref": "#/commons/description-4"
 		},
 		"special_abilities": {

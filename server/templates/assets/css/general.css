@@ -5,3 +5,7 @@
 .w3-sidebar {
 	width: auto !important;
 }
+
+.content {
+	background-image: image("https://upload.wikimedia.org/wikipedia/commons/7/7e/2010-1-meeting-under-the-tree.jpg");
+}

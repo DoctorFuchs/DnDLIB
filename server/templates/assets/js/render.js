@@ -239,6 +239,26 @@ class APIResponse extends HTMLElement {
         return this.generateApiReference(value.proficiency);
     }
 
+    getUsage(usage) {
+        switch (usage.type) {
+            case "per day":
+                return `(${usage.times}/day)`
+
+            case "recharge on roll":
+                return `(Roll a ${usage.dice}, if it is greater than ${usage.min_value} recharge the action)`
+            default:
+
+        }
+        return "";
+    }
+
+    generateAttack(value) {
+        var elem = document.createElement("div");
+        elem.innerHTML += value.usage?`<h3>${value.name} ${this.getUsage(value.usage)}</h3>`:`<h3>${value.name}</h3>`;
+        elem.innerHTML += `<p>${value.desc}</p>`;
+        return elem;
+    }
+
     generateMulticlassing(value) {
         var elem = document.createElement("div");
         var add_header = (text) => {
@@ -412,11 +432,15 @@ class APIResponse extends HTMLElement {
                     return Array.of(elem)
                 }
                 case "multi_classing": {
-                    console.log(value);
                     return Array.of(this.generateMulticlassing(value));
                 }
+                case "legendary_actions":
+                case "special_abilities":
+                case "actions": {
+                    return Array.of(this.generateAttack(value))
+                }
                 default: {
-                    console.log(value)
+                    console.log(key, value)
                 }
             }
         }
@@ -435,6 +459,50 @@ class APIResponse extends HTMLElement {
 
     render() {
         var groups = {};
+        if (Array.isArray(this.json)) {
+            var table = document.createElement("table");
+            var header = document.createElement("thead");
+            var column = (head="", header=false) => {
+                var temp = document.createElement(header?"th":"td");
+                temp.innerText = head;
+                return temp;
+            }
+
+            header.appendChild(column("Level", true));
+            header.appendChild(column("Proficiency Bonus", true));
+            header.appendChild(column("Features", true));
+
+            if (this.json[0].class_specific) {
+                Object.keys(this.json[0].class_specific).forEach(item => {
+                    header.appendChild(column(this.makeReadable(item), true))
+                });
+            }
+
+            table.appendChild(header);
+
+            this.json.forEach((item, i) => {
+                var body = document.createElement("tbody");
+                body.appendChild(column(item.level));
+                body.appendChild(column("+"+item.prof_bonus))
+
+                var features = column();
+                this.getValue(item.features).forEach(item => {
+                    features.appendChild(item);
+                })
+                body.appendChild(features)
+
+                if (item.class_specific) {
+                    Object.values(item.class_specific).forEach(item => {
+                        body.appendChild(column(item))
+                    });
+                }
+                table.appendChild(body);
+            });
+            this.shadowRoot.innerHTML = "<h1>LEVELLLLLS</h1>";
+            this.shadowRoot.appendChild(table);
+            return;
+        }
+
         Object.entries(this.json).forEach(entry => {
             const [key, value] = entry;
             const model = this.getModelFromName(key);
