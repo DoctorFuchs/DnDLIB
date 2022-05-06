@@ -28,9 +28,11 @@
 				<p class="w3-hover-white w3-hover-text-green w3-hide-small">Offical basic rules</p>
 				<P><i class="fa fa-bars w3-hover-white w3-hover-text-green w3-hide-medium w3-hide-large w3-margin-right"></i><p>
 				<div class="w3-dropdown-content w3-bar-block w3-border" style="right:0; width: 100%;">
-					{% for node_key, node_link in api.get("/").items() %}
-						<a href="{{node_link}}" class="w3-section w3-center w3-third w3-hover-text-green">{{node_key.capitalize().replace("-", " ")}}</a>
-					{% endfor %}
+					<div class="responsive-grid">
+						{% for node_key, node_link in api.get("/").items() %}
+							<a href="{{node_link}}" class="w3-section w3-center w3-hover-text-green">{{node_key.capitalize().replace("-", " ")}}</a>
+						{% endfor %}
+					</div>
 				</div>
 			</div>
 		</div>

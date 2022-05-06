@@ -9,3 +9,29 @@
 .content {
 	background-image: image("https://upload.wikimedia.org/wikipedia/commons/7/7e/2010-1-meeting-under-the-tree.jpg");
 }
+
+.responsive-grid {
+	display: grid;
+	grid-gap: 10px;
+}
+
+@media (min-width: 993px) {
+    /*large displays*/
+    .responsive-grid {
+        grid-template-columns: auto auto auto auto;
+    }
+}
+
+@media (max-width: 992px) and (min-width:601px) {
+    /*Medium displays*/
+ 	.responsive-grid {
+        grid-template-columns: auto auto auto;
+    }
+}
+
+@media (max-width: 600px) {
+    /*small displays*/
+    .responsive-grid {
+        grid-template-columns: auto auto;
+    }
+}
