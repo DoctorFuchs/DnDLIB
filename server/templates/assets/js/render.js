@@ -32,7 +32,7 @@ class APIResponse extends HTMLElement {
     createEnviroment(callback) {
         getJson("/assets/json/render.json", "GET", resp => {
             this.models = resp;
-            getJson(this.dataset.url||window.location.href, "POST", resp => {
+            getJson(this.dataset.url||window.locationt.toString(), "POST", resp => {
                 this.json = resp;
                 callback();
             })

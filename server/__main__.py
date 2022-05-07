@@ -8,6 +8,7 @@ import argparse
 import configparser
 from markdown import markdown
 import mimetypes
+from urllib.parse import unquote_plus as unquote
 
 
 mimetypes.add_type("text/javascript", ".js")
@@ -52,6 +53,16 @@ def api_serve(base_node:str, request_path:str):
 
     else:
         return jsonify(api.get(full_request_path))
+
+@app.route("/search", methods=["POST", "GET"])
+def search():
+    if request.method == "GET":
+        return render_template("api_render.html")
+
+    else:
+        assert "query" in request.data, "No query was given by the user"
+        query = request.data["query"]
+        return jsonify(api.search(unquote(request.data["query"])))
 
 @app.route("/assets/<string:folder>/<path:path>")
 def asset_serve(folder, path):
