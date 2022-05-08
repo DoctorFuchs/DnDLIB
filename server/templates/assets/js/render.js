@@ -14,13 +14,30 @@ class APIResponse extends HTMLElement {
         super();
         this.attachShadow({mode: 'open'});
 
+
         var stylesheet = document.createElement("link");
         stylesheet.href = "/assets/css/api_content.css";
         stylesheet.rel = "stylesheet";
 
-        this.shadowRoot.appendChild(stylesheet);
+        var iconsheet = document.createElement("link");
+        iconsheet.href = "/assets/css/font-awesome.min.css";
+        iconsheet.rel = "stylesheet";
+
+        var loading = document.createElement("i");
+        loading.className = "fa fa-cog fa-spin fa-3x fa-fw";
+        loading.style.fontsize = "25px";
+
+        var loading_text = document.createElement("span");
+        loading_text.innerText = "Loading...";
+        loading.style.fontsize = "25px";
+
+        this.shadowRoot.appendChild(iconsheet);
+        this.shadowRoot.appendChild(loading);
+        this.shadowRoot.appendChild(loading_text);
 
         this.createEnviroment(() => {
+            this.shadowRoot.innerHTML = ""
+            this.shadowRoot.appendChild(stylesheet);
             this.render();
         })
 
@@ -383,6 +400,11 @@ class APIResponse extends HTMLElement {
                 case "index,name,url": {
                     return Array.of(this.generateApiReference(value));
                 }
+                case "tag,text": {
+                    var elem = document.createElement(value.tag);
+                    elem.innerText = this.makeReadable(value.text);
+                    return Array.of(elem)
+                }
                 case "size,type": {
                     return Array.of(this.generateAreaOfEffect(value));
                 }
@@ -447,7 +469,7 @@ class APIResponse extends HTMLElement {
         else if (typeof value == "string") {
             if (value.startsWith("/api/")) {
                 var elem = document.createElement("api-response");
-                elem.dataset.url = value;
+                //elem.dataset.url = value;
                 return Array.of(elem);
             }
         }

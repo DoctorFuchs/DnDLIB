@@ -19,7 +19,7 @@
     }
 
     #skills-group {
-        grid-template-columns: auto auto auto !important; 
+        grid-template-columns: auto auto auto !important;
     }
 }
 
@@ -84,6 +84,7 @@ div#content > div {
 
 #heading-group {
     order: -5;
+    padding-bottom: 0px !important;
 }
 
 #description-top-group {

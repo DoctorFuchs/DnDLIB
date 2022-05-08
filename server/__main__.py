@@ -5,7 +5,7 @@ from server.utils.api import API
 from server.utils.path import get_path
 import os
 import argparse
-from server.utils.config import config
+from server.utils.config import config, read_local
 from markdown import markdown
 import mimetypes
 from urllib.parse import unquote_plus as unquote
@@ -99,7 +99,7 @@ if __name__ == "__main__":
     parser.add_argument("--local")
     args = parser.parse_args()
 
-    if args.local: config.read_local()
+    if args.local: read_local()
 
     api = API(config.get("API", "hostname"))
     print("API connection to "+api.api_url)

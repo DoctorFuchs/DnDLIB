@@ -237,6 +237,12 @@
 		"damage_vulnerabilities": {
 			"$ref": "#/commons/description-1"
 		},
+		"variant": {
+			"$ref": "#/commons/description-1"
+		},
+		"rarity": {
+			"$ref": "#/commons/description-1"
+		},
 
 		"desc": {
 			"$ref": "#/commons/description-2",
@@ -315,6 +321,9 @@
 			"$ref": "#/commons/description-2"
 		},
 		"properties": {
+			"$ref": "#/commons/description-2"
+		},
+		"variants": {
 			"$ref": "#/commons/description-2"
 		},
 
