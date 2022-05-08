@@ -13,6 +13,7 @@
 				"content": "$key"
 			},
 			"priority": 0,
+			"accept_empty": false,
 			"classes": []
 		},
 		"heading": {
@@ -280,7 +281,8 @@
 			"$ref": "#/commons/description-2",
 			"headings": {
 				"tag": "h2"
-			}
+			},
+			"accept_empty": true
 		},
 		"multi_classing": {
 			"$ref": "#/commons/description-2"

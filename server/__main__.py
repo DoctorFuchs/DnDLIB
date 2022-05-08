@@ -5,7 +5,7 @@ from server.utils.api import API
 from server.utils.path import get_path
 import os
 import argparse
-import configparser
+from server.utils.config import config
 from markdown import markdown
 import mimetypes
 from urllib.parse import unquote_plus as unquote
@@ -57,12 +57,21 @@ def api_serve(base_node:str, request_path:str):
 @app.route("/search", methods=["POST", "GET"])
 def search():
     if request.method == "GET":
-        return render_template("api_render.html")
+        return render_template("api_render.html", **{
+            "full_request_path":"/search",
+            "api": api,
+            "site": config,
+            "error_code": 200
+        }), 200
 
     else:
-        assert "query" in request.data, "No query was given by the user"
-        query = request.data["query"]
-        return jsonify(api.search(unquote(request.data["query"])))
+        assert "query" in request.values, "No query was given by the user"
+        query = request.values["query"]
+        results = api.search(unquote(query))
+        return jsonify({
+            "count": len(results),
+            "results": results
+        })
 
 @app.route("/assets/<string:folder>/<path:path>")
 def asset_serve(folder, path):
@@ -90,11 +99,9 @@ if __name__ == "__main__":
     parser.add_argument("--local")
     args = parser.parse_args()
 
-    config = configparser.ConfigParser()
-    assert config.read("config.ini") != [], "CONFIG FILE WAS NOT READED"
-    if args.local: config.read("config.local.ini")
+    if args.local: config.read_local()
 
     api = API(config.get("API", "hostname"))
     print("API connection to "+api.api_url)
 
-    app.run(config.get("SERVER", "hostname"), config.getint("SERVER", "port"), debug=True)
+    app.run(config.get("SERVER", "hostname"), config.getint("SERVER", "port"), debug=config.getboolean("SERVER", "debug"))

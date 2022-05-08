@@ -1,4 +1,5 @@
 import requests
+from .config import config
 
 class API:
     def __init__(self, api_url) -> None:
@@ -6,8 +7,9 @@ class API:
         self.cache = {}
 
         # cache main and level 1 subsites, around 15 sites
-        print("catching api main and level 1 subsites...")
-        for key, url in self.get("").items(): self.get(url)
+        if not config.get("SERVER", "debug"):
+            print("catching api main and level 1 subsites...")
+            for key, url in self.get("").items(): self.get(url)
 
     def cut(self, path):
         if path.startswith("/api/"):

@@ -546,7 +546,7 @@ class APIResponse extends HTMLElement {
 
             if (model.group == "default") { console.log("default:", key, value) }
 
-            if (content_elem.innerText == "") { return; }
+            if (content_elem.innerText == "" && !model.accept_empty) { return; }
 
             elem.appendChild(content_elem);
 
