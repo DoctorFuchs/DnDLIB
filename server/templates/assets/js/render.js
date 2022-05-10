@@ -575,7 +575,7 @@ class APIResponse extends HTMLElement {
 
             if (content_elem.innerText == "" && !model.accept_empty) { return; }
 
-            if (model.markdown) { content_elem.innerHTML = this.markdown(value) }
+            if (model.markdown) { content_elem.innerHTML = this.markdown(Array.isArray(value)?value.join("<br><br>"):value) }
 
             elem.appendChild(content_elem);
 
