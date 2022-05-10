@@ -4,7 +4,6 @@ class SearchBar extends HTMLElement {
 
         const urlParams = new URLSearchParams(window.location.search);
         const query = urlParams.get("query");
-        const isGlobalSearch = this.dataset.global||false;
 
         // Attaches a shadow root to your custom element.
         const shadowRoot = this.attachShadow({mode: 'open'});
@@ -17,7 +16,7 @@ class SearchBar extends HTMLElement {
         inputElement.placeholder = "Search...";
         inputElement.value = query;
 
-        if (!isGlobalSearch) {
+        if (!this.isGlobalSearch()) {
             inputElement.onkeyup =  e => {
                 var targets = this.getRootNode().host.shadowRoot.getElementById("results").getElementsByTagName("article")[0].children;
                 var filter = inputElement.value.toUpperCase();
@@ -41,6 +40,10 @@ class SearchBar extends HTMLElement {
         }
         // Appends the input into the shadow root.
         shadowRoot.appendChild(inputElement);
+    }
+
+    isGlobalSearch() {
+        return ["/search", "/"].includes(window.location.pathname);
     }
 }
 

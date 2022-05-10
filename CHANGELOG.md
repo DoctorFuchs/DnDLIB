@@ -4,8 +4,10 @@
 - wiki for homebrew things (v1.0.0)
 
 ### version 0.0.7 -> 0.0.8 (around 10th May 2022)
-- responsive support (60%)
-
+- responsive support (40% to 90%)
+- license update
+- markdown support
+- searchbar (global and local)
 
 ### version 0.0.6 -> 0.0.7 (around 25th April 2022)
 - bug fixes
