@@ -16,9 +16,9 @@
 	{% block stylesheets %}{% endblock %}
 
 	<!--LOADING SCRIPTS-->
-	<script type="module" src="{{url_for(".asset_serve", folder="js", path="js.cookie.mjs")}}"></script>
-	<script type="module" src="{{url_for(".asset_serve", folder="js", path="sidebars.js")}}"></script>
-	<script type="module" src="{{url_for(".asset_serve", folder="js", path="general.js")}}"></script>
+	<script type="module" src='{{url_for(".asset_serve", folder="js", path="js.cookie.mjs")}}'></script>
+	<script type="module" src='{{url_for(".asset_serve", folder="js", path="sidebars.js")}}'></script>
+	<script type="module" src='{{url_for(".asset_serve", folder="js", path="general.js")}}'></script>
 	{% block scripts %}{% endblock %}
 </head>
 <body>
@@ -56,7 +56,7 @@
 			<br>
 		</div>
 		<div class="w3-quarter">
-			<h2><a href="https://www.github.com/doctorfuchs/dndlib"><i class="fa fa-github-square"></i> GitHub</a><h2>
+			<h2><a href="https://www.github.com/doctorfuchs/dndlib"><i class="fa fa-github-square"></i> GitHub</a></h2>
 			<h2><a href="https://www.dnd5eapi.co/"><i class="fa fa-cube"></i> Dnd5eapi</a></h2>
 		</div>
 		<div class="w3-quarter">

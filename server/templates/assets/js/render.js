@@ -35,7 +35,7 @@ class APIResponse extends HTMLElement {
         this.shadowRoot.appendChild(loading);
         this.shadowRoot.appendChild(loading_text);
 
-        this.createEnviroment(() => {
+        this.createEnvironment(() => {
             this.shadowRoot.innerHTML = ""
             this.shadowRoot.appendChild(stylesheet);
             this.render();
@@ -44,9 +44,13 @@ class APIResponse extends HTMLElement {
         var script = document.createElement("script");
         script.src = "/assets/js/search.js";
         this.shadowRoot.appendChild(script);
+
+        var script = document.createElement("script");
+        script.src = "marked.js";
+        this.shadowRoot.appendChild(script);
     }
 
-    createEnviroment(callback) {
+    createEnvironment(callback) {
         getJson("/assets/json/render.json", "GET", resp => {
             this.models = resp;
             getJson(this.dataset.url||window.location.toString(), "POST", resp => {
@@ -251,7 +255,7 @@ class APIResponse extends HTMLElement {
         return this.generateApiReference(value.ability_score);
     }
 
-    generateProfiency(value) {
+    generateProficiency(value) {
         value.proficiency.name = "+" + value.value + " " + value.proficiency.name;
         return this.generateApiReference(value.proficiency);
     }
@@ -433,7 +437,7 @@ class APIResponse extends HTMLElement {
                     return Array.of(this.generateAbilityBonus(value));
                 }
                 case "proficiency,value": {
-                    return Array.of(this.generateProfiency(value))
+                    return Array.of(this.generateProficiency(value))
                 }
                 case "desc,name,options": {
                     var result = [this.generateFeature(value)];
@@ -570,6 +574,8 @@ class APIResponse extends HTMLElement {
 
             if (content_elem.innerText == "" && !model.accept_empty) { return; }
 
+            if (model.markdown) { content_elem.innerText = this.markdown(content_elem.inner_text) }
+
             elem.appendChild(content_elem);
 
             if (model.single) {
@@ -629,6 +635,10 @@ class APIResponse extends HTMLElement {
             }
         });
         return output;
+    }
+
+    markdown(text) {
+        return text;
     }
 }
 

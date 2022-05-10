@@ -4,7 +4,7 @@ class SearchBar extends HTMLElement {
 
         const urlParams = new URLSearchParams(window.location.search);
         const query = urlParams.get("query");
-        const isGlobalSearch = window.location.pathname.indexOf(["/search", "/"])
+        const isGlobalSearch = this.dataset.global||false;
 
         // Attaches a shadow root to your custom element.
         const shadowRoot = this.attachShadow({mode: 'open'});
@@ -33,7 +33,7 @@ class SearchBar extends HTMLElement {
         }
         else {
             inputElement.onkeypress = e => {
-                if (e.keyCode === 13) {
+                if (e.keyCode == 13) {
                     e.preventDefault();
                     window.location = `${window.location.origin}/search?query=${inputElement.value}`
                 }
