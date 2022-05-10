@@ -46,7 +46,7 @@ class APIResponse extends HTMLElement {
         this.shadowRoot.appendChild(script);
 
         var script = document.createElement("script");
-        script.src = "marked.js";
+        script.src = "/assets/js/marked.js";
         this.shadowRoot.appendChild(script);
     }
 
@@ -574,7 +574,7 @@ class APIResponse extends HTMLElement {
 
             if (content_elem.innerText == "" && !model.accept_empty) { return; }
 
-            if (model.markdown) { content_elem.innerText = this.markdown(content_elem.inner_text) }
+            if (model.markdown) { content_elem.innerHTML = this.markdown(content_elem.innerText) }
 
             elem.appendChild(content_elem);
 
@@ -638,7 +638,14 @@ class APIResponse extends HTMLElement {
     }
 
     markdown(text) {
-        return text;
+        if (text) {
+            text = marked.parse(text);
+            return text;
+        }
+        else {
+            return ""
+        }
+
     }
 }
 
