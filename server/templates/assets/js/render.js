@@ -48,6 +48,7 @@ class APIResponse extends HTMLElement {
         var script = document.createElement("script");
         script.src = "/assets/js/marked.js";
         this.shadowRoot.appendChild(script);
+
     }
 
     createEnvironment(callback) {
@@ -574,7 +575,7 @@ class APIResponse extends HTMLElement {
 
             if (content_elem.innerText == "" && !model.accept_empty) { return; }
 
-            if (model.markdown) { content_elem.innerHTML = this.markdown(content_elem.innerText) }
+            if (model.markdown) { content_elem.innerHTML = this.markdown(value) }
 
             elem.appendChild(content_elem);
 
