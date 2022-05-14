@@ -18,7 +18,7 @@ class SearchBar extends HTMLElement {
 
         if (!this.isGlobalSearch()) {
             inputElement.onkeyup =  e => {
-                var targets = this.getRootNode().host.shadowRoot.getElementById("results").getElementsByTagName("article")[0].children;
+                var targets = this.parentNode.getElementsByTagName("article")[0].children;
                 var filter = inputElement.value.toUpperCase();
                 for (let i = 0; i < targets.length; i++) {
                     var txtValue = targets[i].textContent || targets[i].innerText;

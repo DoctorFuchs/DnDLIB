@@ -15,6 +15,7 @@
 			"priority": 0,
 			"accept_empty": false,
 			"markdown": false,
+			"searchbar": false,
 			"classes": []
 		},
 		"heading": {
@@ -182,6 +183,9 @@
 		"hit_dice": {
 			"$ref": "#/commons/description-1"
 		},
+		"vehicle_category": {
+			"$ref": "#/commons/description-1"
+		},
 		"hit_die": {
 			"$ref": "#/commons/description-1"
 		},
@@ -189,6 +193,12 @@
 			"$ref": "#/commons/description-1"
 		},
 		"speed": {
+			"$ref": "#/commons/description-1"
+		},
+		"capacity": {
+			"$ref": "#/commons/description-1"
+		},
+		"parent": {
 			"$ref": "#/commons/description-1"
 		},
 		"saving_throws": {
@@ -274,16 +284,12 @@
 		"skills": {
 			"$ref": "#/commons/description-2"
 		},
-		"spells": {
+		"trait_specific": {
 			"$ref": "#/commons/description-2"
 		},
-		"count": {
+		"spells": {
 			"$ref": "#/commons/description-2",
-			"content": false,
-			"headings": {
-				"content": "Found $value results",
-				"tag": "h2"
-			}
+			"searchbar": true
 		},
 		"results": {
 			"$ref": "#/commons/description-2",
@@ -302,9 +308,6 @@
 			"$ref": "#/commons/description-2"
 		},
 		"class_levels": {
-			"$ref": "#/commons/description-2"
-		},
-		"vehicle_category": {
 			"$ref": "#/commons/description-2"
 		},
 		"equipment": {
@@ -383,6 +386,9 @@
 			"$ref": "#/commons/hidden"
 		},
 		"_id": {
+			"$ref": "#/commons/hidden"
+		},
+		"count": {
 			"$ref": "#/commons/hidden"
 		}
 	}

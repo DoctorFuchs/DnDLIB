@@ -4,7 +4,7 @@ function getJson(url, method, callback) {
     req.open(method, url, true);
     req.onload  = function() {
        var jsonResponse = req.response;
-       callback(jsonResponse);
+       return callback(jsonResponse);
     };
     req.send(null);
 }
@@ -38,6 +38,7 @@ class APIResponse extends HTMLElement {
         this.createEnvironment(() => {
             this.shadowRoot.innerHTML = ""
             this.shadowRoot.appendChild(stylesheet);
+            this.shadowRoot.appendChild(iconsheet);
             this.render();
         })
 
@@ -48,13 +49,13 @@ class APIResponse extends HTMLElement {
         var script = document.createElement("script");
         script.src = "/assets/js/marked.js";
         this.shadowRoot.appendChild(script);
-
     }
 
     createEnvironment(callback) {
         getJson("/assets/json/render.json", "GET", resp => {
             this.models = resp;
-            getJson(this.dataset.url||window.location.toString(), "POST", resp => {
+            this.url = this.dataset.url||window.location.toString();
+            getJson(this.url, "POST", resp => {
                 this.json = resp;
                 callback();
             })
@@ -268,8 +269,6 @@ class APIResponse extends HTMLElement {
 
             case "recharge on roll":
                 return `(Roll a ${usage.dice}, if it is greater than ${usage.min_value} recharge the action)`
-            default:
-
         }
         return "";
     }
@@ -374,16 +373,82 @@ class APIResponse extends HTMLElement {
                 return this.generateAttackChoice(value);
             }
             default: {
-                console.log(value)
                 return this.generateDefaultChoice(value);
             }
 
         }
     }
 
+    getMainHeader() {
+        var row = document.createElement("div");
+        if (this.url.indexOf("/api/") != -1) {
+            var results = [];
+            var urls = this.url.split("/api/").slice(-1)[0].split("/");
+            urls.forEach((item, i) => {
+                results.push(`<a class="path-link" href="/api/${urls.slice(0, i+1).join("/")}">${this.makeReadable(item)}</a>`)
+            })
+            var path = document.createElement("span");
+            path.className = "path-bar";
+            path.innerHTML = results.join(" > ");
+            row.appendChild(path);
+
+            var utils = document.createElement("span");
+            utils.className = "utils-bar";
+
+            // add utils for users here, like printer icon with print onclick
+
+            row.appendChild(utils);
+        }
+
+        return row
+    }
+
     getValue(key, value) {
         if (Array.isArray(value) && value.length != 0) {
             var result = Array();
+            switch (key) {
+                case "class_levels": {
+                    var table = document.createElement("table");
+                    var header = document.createElement("thead");
+                    var column = (head="", header=false) => {
+                        var temp = document.createElement(header?"th":"td");
+                        temp.innerText = head;
+                        return temp;
+                    }
+
+                    header.appendChild(column("Level", true));
+                    header.appendChild(column("Proficiency Bonus", true));
+                    header.appendChild(column("Features", true));
+
+                    if (value[0].class_specific) {
+                        Object.keys(value[0].class_specific).forEach(item => {
+                            header.appendChild(column(this.makeReadable(item), true))
+                        });
+                    }
+
+                    table.appendChild(header);
+
+                    value.forEach((item, i) => {
+                        var body = document.createElement("tbody");
+                        body.appendChild(column(item.level));
+                        body.appendChild(column("+"+item.prof_bonus))
+
+                        var features = column();
+                        this.getValue("", item.features).forEach(item => {
+                            features.appendChild(item);
+                        })
+                        body.appendChild(features)
+
+                        if (item.class_specific) {
+                            Object.values(item.class_specific).forEach(item => {
+                                body.appendChild(column(item))
+                            });
+                        }
+                        table.appendChild(body);
+                    })
+                    return [table]
+                }
+            }
             switch (typeof value[0]) {
                 case "string": {
                     var elem = document.createElement("div");
@@ -466,16 +531,33 @@ class APIResponse extends HTMLElement {
                 case "actions": {
                     return Array.of(this.generateAttack(value))
                 }
+                case "spellcasting": {
+                    var elem = document.createElement("div");
+                    var create_info = (info) => {
+                        var header = document.createElement("h3");
+                        var text = document.createElement("p");
+
+                        header.innerText = info.name;
+                        text.innerHTML = info.desc.join("<br>")
+
+                        return [header, text];
+                    }
+                    elem.innerHTML = `<p>Since level ${value.level} your spellcasting ability is ${value.spellcasting_ability.name}.</p>`;
+                    value.info.forEach(item => {
+                        create_info(item).forEach(e =>{
+                            elem.appendChild(e)
+                        });
+                    })
+
+                    return Array.of(elem)
+                }
+
+                case "spells": {
+                    return this.getValue("results", value.results);
+                }
                 default: {
                     console.log(key, value)
                 }
-            }
-        }
-        else if (typeof value == "string") {
-            if (value.startsWith("/api/")) {
-                var elem = document.createElement("api-response");
-                //elem.dataset.url = value;
-                return Array.of(elem);
             }
         }
         var elem = document.createElement("div");
@@ -486,50 +568,6 @@ class APIResponse extends HTMLElement {
 
     render() {
         var groups = {};
-        if (Array.isArray(this.json)) {
-            var table = document.createElement("table");
-            var header = document.createElement("thead");
-            var column = (head="", header=false) => {
-                var temp = document.createElement(header?"th":"td");
-                temp.innerText = head;
-                return temp;
-            }
-
-            header.appendChild(column("Level", true));
-            header.appendChild(column("Proficiency Bonus", true));
-            header.appendChild(column("Features", true));
-
-            if (this.json[0].class_specific) {
-                Object.keys(this.json[0].class_specific).forEach(item => {
-                    header.appendChild(column(this.makeReadable(item), true))
-                });
-            }
-
-            table.appendChild(header);
-
-            this.json.forEach((item, i) => {
-                var body = document.createElement("tbody");
-                body.appendChild(column(item.level));
-                body.appendChild(column("+"+item.prof_bonus))
-
-                var features = column();
-                this.getValue(item.features).forEach(item => {
-                    features.appendChild(item);
-                })
-                body.appendChild(features)
-
-                if (item.class_specific) {
-                    Object.values(item.class_specific).forEach(item => {
-                        body.appendChild(column(item))
-                    });
-                }
-                table.appendChild(body);
-            });
-            this.shadowRoot.innerHTML = "<h1>LEVELLLLLS</h1>";
-            this.shadowRoot.appendChild(table);
-            return;
-        }
-
         Object.entries(this.json).forEach(entry => {
             const [key, value] = entry;
             const model = this.getModelFromName(key);
@@ -552,7 +590,7 @@ class APIResponse extends HTMLElement {
 
             var content_elem = document.createElement("article");
             if (model.content) {
-                if (key == "results") {
+                if (key == "results" || model.searchbar) {
                     elem.appendChild(document.createElement("search-bar"))
                     if (window.location.pathname == "/api/features") {
                         value.sort((a, b) => {
@@ -608,6 +646,7 @@ class APIResponse extends HTMLElement {
             content.appendChild(group_element);
         })
 
+        this.shadowRoot.appendChild(this.getMainHeader());
         this.shadowRoot.appendChild(content);
     }
 

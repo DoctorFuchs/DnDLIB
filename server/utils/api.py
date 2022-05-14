@@ -19,10 +19,22 @@ class API:
             return path.replace("/api/", "", 1)
         return path
 
+    def clear_link(self, key, result):
+        if key in result:
+            result[key] = self.get(result[key])
+
+        return result
+
     def get(self, path):
-        return self.get_raw(path).json()
+        result = self.get_raw(path).json()
+        if path.startswith("/api/classes"):
+            result = self.clear_link("spells", result)
+            result = self.clear_link("class_levels", result)
+
+        return result
 
     def get_raw(self, path):
+        print(path)
         path = self.cut(path)
         if path in self.cache: return self.cache[path]
         resp = requests.get(self.api_url + path)
@@ -34,12 +46,12 @@ class API:
         results = []
         for key, url in search_urls.items():
             result = self.get(url).get("results", [])
-            if not result: continue
-            results.append({
+            if not result:
+                continue
+            results = [*results, {
                 "text": key,
                 "tag": "h2"
-            })
-            results = [*results, *result, {
+            }, *result, {
                 "name": key,
                 "index": key,
                 "url": url
@@ -54,7 +66,7 @@ class API:
             for x in result.values():
                 if query.lower() in x.lower():
                     final_results.append(result)
-                    break;
+                    break
 
         title = False
         indexes = []
