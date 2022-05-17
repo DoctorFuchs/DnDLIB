@@ -517,9 +517,7 @@ class APIResponse extends Base {
             }
             switch (typeof value[0]) {
                 case "string": {
-                    var elem = document.createElement("div");
-                    elem.innerHTML = value.join(", ");
-                    result = Array.of(elem);
+                    result = Array.of(this.builder("div").setInnerHTML(value.join(", ")));
                     break;
                 }
                 case "object": {
@@ -537,9 +535,7 @@ class APIResponse extends Base {
                     return Array.of(this.generateApiReference(value));
                 }
                 case "tag,text": {
-                    var elem = document.createElement(value.tag);
-                    elem.innerText = this.makeReadable(value.text);
-                    return Array.of(elem)
+                    return Array.of(this.builder(value.tag).setInnerText(this.makeReadable(value.text)))
                 }
                 case "size,type": {
                     return Array.of(this.generateAreaOfEffect(value));
@@ -598,24 +594,22 @@ class APIResponse extends Base {
                     return Array.of(this.generateAttack(value))
                 }
                 case "spellcasting": {
-                    var elem = document.createElement("div");
+                    var elem = this.builder("div").addInnerHTML(
+                        `<p>Since level ${value.level} your spellcasting ability is ${value.spellcasting_ability.name}.</p>`
+                    );
                     var create_info = (info) => {
-                        var header = document.createElement("h3");
-                        var text = document.createElement("p");
-
-                        header.innerText = info.name;
-                        text.innerHTML = info.desc.join("<br>")
-
-                        return [header, text];
+                        return [
+                            this.builder("h3").addInnerText(info.name).build(),
+                            this.builder("p").addInnerHTML(info.desc.join("<br>")).build()
+                        ];
                     }
-                    elem.innerHTML = `<p>Since level ${value.level} your spellcasting ability is ${value.spellcasting_ability.name}.</p>`;
                     value.info.forEach(item => {
                         create_info(item).forEach(e =>{
                             elem.appendChild(e)
                         });
                     })
 
-                    return Array.of(elem)
+                    return Array.of(elem.build())
                 }
 
                 case "spells": {
