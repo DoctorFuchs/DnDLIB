@@ -450,14 +450,14 @@ class APIResponse extends Base {
                 }
 
             }
-        })
+        }).build();
     }
 
     getMainHeader() {
-        var row = this.builder("div");
+        let row = this.builder("div");
         if (this.url.indexOf("/api/") !== -1) {
-            var results = [];
-            var urls = this.url.split("/api/").slice(-1)[0].split("/");
+            let results = [];
+            let urls = this.url.split("/api/").slice(-1)[0].split("/");
             urls.forEach((item, i) => {
                 results.push(`<a class="path-link" href="/api/${urls.slice(0, i+1).join("/")}">${this.makeReadable(item)}</a>`)
             })
@@ -471,13 +471,13 @@ class APIResponse extends Base {
 
     getValue(key, value) {
         if (Array.isArray(value) && value.length != 0) {
-            var result = Array();
+            let result = Array();
             switch (key) {
                 case "class_levels": {
-                    var table = document.createElement("table");
-                    var header = document.createElement("thead");
-                    var column = (head="", header=false) => {
-                        var temp = document.createElement(header?"th":"td");
+                    let table = document.createElement("table");
+                    let header = document.createElement("thead");
+                    let column = (head="", header=false) => {
+                        let temp = document.createElement(header?"th":"td");
                         temp.innerText = head;
                         return temp;
                     }
@@ -495,11 +495,11 @@ class APIResponse extends Base {
                     table.appendChild(header);
 
                     value.forEach((item, i) => {
-                        var body = document.createElement("tbody");
+                        let body = document.createElement("tbody");
                         body.appendChild(column(item.level));
                         body.appendChild(column("+"+item.prof_bonus))
 
-                        var features = column();
+                        let features = column();
                         this.getValue("", item.features).forEach(item => {
                             features.appendChild(item);
                         })
@@ -568,7 +568,7 @@ class APIResponse extends Base {
                     return Array.of(this.generateProficiency(value))
                 }
                 case "desc,name,options": {
-                    var result = [this.generateFeature(value)];
+                    let result = [this.generateFeature(value)];
                     result.push(this.generateChoice(value.options));
                     return result;
                 }
@@ -576,12 +576,12 @@ class APIResponse extends Base {
             switch (key) {
                 case "senses":
                 case "speed": {
-                    var result = [];
+                    let result = [];
                     Object.entries(value).forEach(entry => {
                         const [_key, _value] = entry;
                         result.push(`${this.makeReadable(_key)}: ${_value}`);
                     })
-                    var elem = document.createElement("div");
+                    let elem = document.createElement("div");
                     elem.innerHTML = result.join("<br>");
                     return Array.of(elem)
                 }
@@ -594,10 +594,10 @@ class APIResponse extends Base {
                     return Array.of(this.generateAttack(value))
                 }
                 case "spellcasting": {
-                    var elem = this.builder("div").addInnerHTML(
+                    let elem = this.builder("div").addInnerHTML(
                         `<p>Since level ${value.level} your spellcasting ability is ${value.spellcasting_ability.name}.</p>`
                     );
-                    var create_info = (info) => {
+                    let create_info = (info) => {
                         return [
                             this.builder("h3").addInnerText(info.name).build(),
                             this.builder("p").addInnerHTML(info.desc.join("<br>")).build()
@@ -620,35 +620,35 @@ class APIResponse extends Base {
                 }
             }
         }
-        var elem = document.createElement("div");
+        let elem = document.createElement("div");
         elem.innerHTML = value;
         elem.innerText = this.makeReadable(elem.innerText);
         return Array.of(elem);
     }
 
     render() {
-        var groups = {};
+        let groups = {};
         Object.entries(this.json).forEach(entry => {
             const [key, value] = entry;
             const model = this.getModelFromName(key);
 
             if (!model.visible) { return; }
 
-            var elem = document.createElement("section");
-            elem.name = model.group;
-            elem.id = key;
+            let elem = this.builder("section").call((elem) => {
+                elem.name = model.group;
+                elem.id = key;
 
-            // apply classes
-            model.classes.forEach(cls => { elem.classList.add(cls) });
-            elem.classList.add(model.group);
-            elem.setAttribute("priority", model.priority)
-            elem.style.order = model.priority;
+                model.classes.forEach(cls => { elem.classList.add(cls) });
+
+                elem.setAttribute("priority", model.priority)
+                elem.style.order = model.priority;
+            }).addClass(model.group).build();
 
 
-            var heading = this.generateHeading(key, value);
+            let heading = this.generateHeading(key, value);
             if (heading != null) { elem.appendChild(heading) }
 
-            var content_elem = document.createElement("article");
+            let content_elem = this.builder("article").build();
             if (model.content) {
                 if (key === "results" || model.searchbar) {
                     elem.appendChild(document.createElement("search-bar"))
@@ -664,7 +664,11 @@ class APIResponse extends Base {
                     try {
                         content_elem.appendChild(item)
                     } catch (TypeError) {
-                        console.log(item);
+                        console.debug({
+                                key: key,
+                                value: value,
+                                item: item
+                        });
                     }
                 })
             }
@@ -693,12 +697,12 @@ class APIResponse extends Base {
             }
         })
 
-        var content = document.createElement("div");
+        let content = document.createElement("div");
         content.id = "content";
 
         Object.entries(groups).forEach(entry => {
             const [key, values] = entry;
-            var group_element = document.createElement("div");
+            let group_element = document.createElement("div");
             group_element.id = `${key}-group`;
             values.forEach(element => {
                 group_element.appendChild(element);
