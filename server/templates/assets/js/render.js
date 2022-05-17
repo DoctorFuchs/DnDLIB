@@ -1,65 +1,121 @@
-function getJson(url, method, callback) {
-    var req = new XMLHttpRequest();
-    req.responseType = 'json';
-    req.open(method, url, true);
-    req.onload  = function() {
-       var jsonResponse = req.response;
-       return callback(jsonResponse);
-    };
-    req.send(null);
-}
-
-class APIResponse extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({mode: 'open'});
-
-
-        var stylesheet = document.createElement("link");
-        stylesheet.href = "/assets/css/api_content.css";
-        stylesheet.rel = "stylesheet";
-
-        var iconsheet = document.createElement("link");
-        iconsheet.href = "/assets/css/font-awesome.min.css";
-        iconsheet.rel = "stylesheet";
-
-        var loading = document.createElement("i");
-        loading.className = "fa fa-cog fa-spin fa-3x fa-fw";
-        loading.style.fontsize = "25px";
-
-        var loading_text = document.createElement("span");
-        loading_text.innerText = "Loading...";
-        loading.style.fontsize = "25px";
-
-        this.shadowRoot.appendChild(iconsheet);
-        this.shadowRoot.appendChild(loading);
-        this.shadowRoot.appendChild(loading_text);
-
-        this.createEnvironment(() => {
-            this.shadowRoot.innerHTML = ""
-            this.shadowRoot.appendChild(stylesheet);
-            this.shadowRoot.appendChild(iconsheet);
-            this.render();
-        })
-
-        var script = document.createElement("script");
-        script.src = "/assets/js/search.js";
-        this.shadowRoot.appendChild(script);
-
-        var script = document.createElement("script");
-        script.src = "/assets/js/marked.js";
-        this.shadowRoot.appendChild(script);
+class Builder {
+    constructor(instance, tag) {
+        this.instance = instance;
+        this.result = document.createElement(tag);
     }
 
-    createEnvironment(callback) {
-        getJson("/assets/json/render.json", "GET", resp => {
-            this.models = resp;
-            this.url = this.dataset.url||window.location.toString();
-            getJson(this.url, "POST", resp => {
-                this.json = resp;
-                callback();
-            })
-        })
+    addElement(tag) {
+        return new Builder(this, tag);
+    }
+
+    call(callback) {
+        callback(this.result);
+        return this;
+    }
+
+    build(attach=false) {
+        if (this.instance.class === Builder) {
+            this.instance.result.appendChild(this.result);
+            return this.instance;
+        }
+        else {
+            if (attach && this.instance.shadowRoot) {
+                this.instance.shadowRoot.appendChild(this.result)
+            }
+            return this.result;
+        }
+    }
+
+    setInnerHTML(content) {
+        this.result.innerHTML = content;
+        return this;
+    }
+
+    setInnerText(content) {
+        this.result.innerText = content;
+        return this;
+    }
+
+    addInnerHTML(content) {
+        this.result.innerHTML += content;
+        return this;
+    }
+
+    addInnerText(content) {
+        this.result.innerText += content;
+        return this;
+    }
+
+    clear() {
+        this.result = document.createElement(this.result.tagName);
+        return this;
+    }
+
+    addClass(class_name) {
+        this.result.className += class_name;
+        return this;
+    }
+
+    removeClass(class_name) {
+        // TODO: Remove class function
+    }
+
+    toggleClass(class_name) {
+        // TODO: toggle class function
+    }
+
+    appendChild(elem) {
+        this.result.appendChild(elem);
+        return this;
+    }
+}
+
+class Base extends HTMLElement {
+    constructor() {
+        super();
+
+        this.attachShadow({mode: 'open'});
+    }
+
+    addScript(url) {
+        let script = document.createElement("script");
+        script.src = url;
+        this.shadowRoot.appendChild(script);
+        return script;
+    }
+
+    addStyle(url) {
+        let stylesheet = document.createElement("link");
+        stylesheet.href = url;
+        stylesheet.rel = "stylesheet";
+        this.shadowRoot.appendChild(stylesheet);
+        return stylesheet;
+    }
+
+    addIcon(icon_name, ...classes) {
+        let icon = document.createElement("i");
+        icon.className = `fa fa-${icon_name} ${classes.join(" ")}`;
+        this.shadowRoot.appendChild(icon);
+        return icon;
+    }
+
+    addText(content, size="12px", tag="p") {
+        let text = document.createElement(tag);
+        text.innerText = content;
+        text.style.fontsize = size;
+        this.shadowRoot.appendChild(text);
+        return text;
+    }
+
+    getJson(url, method, callback) {
+        let req = new XMLHttpRequest();
+        req.responseType = "json";
+        req.open(method, url, true);
+        req.onload  = function() {
+            let jsonResponse = req.response;
+            return callback(jsonResponse);
+        };
+        req.send(null);
     }
 
     capitalize(string) {
@@ -70,68 +126,138 @@ class APIResponse extends HTMLElement {
         return this.capitalize(string).replaceAll(/[_-]/g, " ")
     }
 
+    isObject(item) {
+        return (item && typeof item === "object" && !Array.isArray(item));
+    }
+
+    mergeDeep(target, source) {
+        let output = Object.assign({}, target);
+        if (!this.isObject(target) && !this.isObject(source)) { return output; }
+
+        Object.keys(source).forEach(key => {
+            if (this.isObject(source[key])) {
+                if (!(key in target)) {
+                    Object.assign(output, { [key]: source[key] });
+                }
+                else {
+                    output[key] = this.mergeDeep(target[key], source[key]);
+                }
+            }
+            else if (Array.isArray(source[key])) {
+                Object.assign(output, { [key]: source[key].concat(target[key]) });
+            }
+            else {
+                Object.assign(output, { [key]: source[key] });
+            }
+        });
+        return output;
+    }
+
+    markdown(text) {
+        if (!text) { return "" }
+        text = marked.parse(text);
+        return text;
+    }
+
+    builder(tag) {
+        return new Builder(this, tag)
+    }
+}
+
+class APIResponse extends Base {
+    constructor() {
+        super();
+
+        this.addStyle("/assets/css/font-awesome.min.css");
+
+        this.addIcon("cog", "fa-spin", "fa-3x", "fa-fw", "icon-center");
+        this.addText("Loading...", "25px", "p", "text-center");
+
+        this.createEnvironment(() => {
+            this.shadowRoot.innerHTML = ""
+            this.addStyle("/assets/css/api_content.css");
+            this.addStyle("/assets/css/font-awesome.min.css");
+            this.render();
+        })
+
+        this.addScript("/assets/js/search.js");
+        this.addScript("/assets/js/marked.js");
+    }
+
+    createEnvironment(callback) {
+        this.getJson("/assets/json/render.json", "GET", resp => {
+            this.models = resp;
+            this.url = this.dataset.url||window.location.toString();
+            this.getJson(this.url, "POST", resp => {
+                this.json = resp;
+                callback();
+            })
+        })
+    }
+
     getModelFromName(name) {
-        if (name == "classes") { name = "_classes"}
+        if (name === "classes") { name = "_classes"}
         return this.getModel(`#/models/${name}`)
     }
 
     getModel(path){
         if (!path.startsWith("#")) { return this.getModel("#/commons/default") }
-        var path_list = path.trim().slice(1).split("/");
-        var model = this.models;
+        let path_list = path.trim().slice(1).split("/");
+        let model = this.models;
         path_list.forEach(p => {
             if (p in model) { model = model[p]; }
         });
         if ("$ref" in model) {
             model = this.mergeDeep(this.getModel(model["$ref"]), model);
         }
-        if (path != "#/commons/default") {
+        if (path !== "#/commons/default") {
             model = this.mergeDeep(this.getModel("#/commons/default"), model);
         }
         return model;
     }
 
     generateHeading(key, value) {
-        var model = this.getModelFromName(key)["headings"];
+        let model = this.getModelFromName(key)["headings"];
 
         if (!model.visible) { return null; }
 
-        var elem = document.createElement(model.tag);
-        elem.classList = model.classes;
-        var content = model["content"].replaceAll("$key", key).replaceAll("$value", value);
-        elem.innerText = this.makeReadable(content);
-
-        return elem;
+        return this.builder(model.tag).call(elem => {
+            model.classes.forEach(cls => {
+                elem.addClass(cls);
+            })
+        }).setInnerHTML(
+            this.makeReadable(
+                model.content.replaceAll("$key", key).replaceAll("$value", value)
+            )
+        ).build()
     }
 
     generateApiReference(value) {
-        var elem = document.createElement("div");
-        elem.classList.add("api-reference");
-        elem.addEventListener("click", e => { window.location.assign(value.url) })
-        elem.innerHTML = this.makeReadable(value.name);
-        return elem;
+        return this.builder("div").addClass("api-reference").call(elem => {
+            elem.addEventListener("click", e => { window.location.assign(value.url) })
+        }).setInnerText(this.makeReadable(value.name)).build()
     }
 
     generateAreaOfEffect(value) {
-        var elem = document.createElement("div");
-        elem.classList.add("area-of-effect");
-        elem.innerHTML = `${value.size} ft (${value.type})`
-        return elem;
+        return this.builder("div")
+            .addClass("area-of-effect")
+            .setInnerText(`${value.size} ft (${value.type})`)
+            .build();
     }
 
     generateAlignmentChoice(value) {
-        var alignments = Array();
+        let alignments = Array();
         value.alignments.forEach(alignment => {
             alignments.push(alignment.name)
         })
 
-        if (alignments.length==9) {
+        if (alignments.length === 9) {
             alignments = ["Any Alignment"];
         }
 
-        var elem = document.createElement("p");
-        elem.innerHTML = `${value.desc} (${alignments.join(", ")})`
-        return elem;
+        return this.builder("p")
+            .setInnerHTML(`${value.desc} (${alignments.join(", ")})`)
+            .build()
     }
 
     generateEquipment(value) {
@@ -139,107 +265,72 @@ class APIResponse extends HTMLElement {
         return this.getValue("equipment", value.equipment)
     }
 
-    generateEquipmentChoice(value) {
-        var getOption = (value, selected=false) => {
-            var option = document.createElement("option");
+    getOption(value, selected=false) {
+        return this.builder("option").setInnerHTML(value).call(option => {
             option.innerHTML = value;
             option.value = value;
             option.selected = selected;
             option.disabled = !selected;
-            return option;
-        }
-        var choicer = document.createElement("select");
-        choicer.appendChild(getOption(`Select ${value.choose} of`, true));
+        }).build();
+    }
 
-        Object.values(value.from).forEach(value => {
-            var getEquipmentDescription = (_value) => {
-                if ("equipment_category" in _value) {
-                    return _value.equipment_category.name;
-                }
-                else if ("equipment" in _value) {
-                    return _value.quantity + " " + _value.equipment.name;
-                }
-                else if ("equipment_option" in _value) {
-                    return  _value.equipment_option.choose + " " +
-                            getEquipmentDescription(_value.equipment_option.from);
-                }
-                else if (Array.isArray(_value) || this.isObject(_value)) {
-                    if (this.isObject(_value)) {
-                        _value = Object.values(_value);
-                    }
-                    var result = [];
-                    _value.forEach(item => {
-                        result.push(getEquipmentDescription(item));
-                    })
-                    return result.join(" and ");
-                }
+    generateEquipmentChoice(value) {
+        let getEquipmentDescription = (val) => {
+            if ("equipment_category" in val) {
+                return val.equipment_category.name;
             }
-            choicer.appendChild(getOption(getEquipmentDescription(value)));
+            else if ("equipment" in val) {
+                return val.quantity + " " + val.equipment.name;
+            }
+            else if ("equipment_option" in val) {
+                return val.equipment_option.choose + " " +
+                    getEquipmentDescription(val.equipment_option.from);
+            }
+            else if (Array.isArray(val) || this.isObject(val)) {
+                if (this.isObject(val)) {
+                    val = Object.values(val);
+                }
+                let result = [];
+                val.forEach(item => {
+                    result.push(getEquipmentDescription(item));
+                })
+                return result.join(" and ");
+            }
+        }
 
-        })
-
-        return choicer;
+        return this.generateSelectChoice(value, getEquipmentDescription)
     }
 
     generateFeature(value) {
-        var elem = document.createElement("div");
-        elem.innerHTML += `<h3>${value.name}</h3>`;
-        elem.innerHTML += Array.isArray(value.desc)? value.desc.join("<br><br>"): value.desc;
-        return elem;
+        return this.builder("div").addInnerHTML(`<h3>${value.name}</h3>`).addInnerHTML(
+            Array.isArray(value.desc)? value.desc.join("<br><br>"): value.desc
+        ).build()
     }
 
     generateCost(value) {
-        var elem = document.createElement("div");
-        elem.innerHTML = `${value.quantity} ${this.makeReadable(value.unit)}`;
-        return elem;
+        return this.builder("div").setInnerHTML(`${value.quantity} ${this.makeReadable(value.unit)}`).build();
     }
 
-    generateDefaultChoice(value) {
-        var getOption = (value, selected=false) => {
-            var option = document.createElement("option");
-            option.innerHTML = value;
-            option.value = value;
-            option.selected = selected;
-            option.disabled = !selected;
-            return option;
-        }
-        var choicer = document.createElement("select");
-        choicer.appendChild(getOption(`Select ${value.choose} of`, true));
-
-        Object.values(value.from).forEach(value => {
-            choicer.appendChild(getOption(value.name));
-        })
-
-        return choicer;
+    generateSelectChoice(value, wrapper= (val) => {return val} ) {
+        return this.builder("select").appendChild(
+            this.getOption(`Select ${value.choose} of`, true)
+        ).call(choicer => {
+            Object.values(value.from).forEach(value => {
+                choicer.appendChild(this.getOption(wrapper(value)));
+            })
+        }).build()
     }
 
     generateAttackChoice(value) {
-        var elem = document.createElement("div");
-        elem.innerHTML += `<p>Choose ${value.choose}: </p>`;
-
-        var list = document.createElement("ul");
-        var addToList = (content) => {
-            var item = document.createElement("li");
-            item.innerHTML = content;
-            list.appendChild(item);
-        }
-
-        var generate = (attack) => {
-            list.innerHTML += `<li>Attack ${attack.count} times with ${attack.name} (${attack.type})</li>`
-        }
-
-        value.from.forEach(_value => {
-            if (this.isObject(_value)) {
-                Object.values(_value).forEach(attack => {
-                    generate(attack);
-                });
-            }
-            else {
-                generate(_value);
-            }
-        })
-        elem.appendChild(list)
-        return elem;
+        return this.builder("div").addInnerHTML(`<p>Choose ${value.choose}: </p>`)
+            .addElement('ul').call(list => {
+                value.from.forEach(_value => {
+                    if (!this.isObject(_value)) { _value = {1: _value} }
+                    Object.values(_value).forEach(attack => {
+                        list.innerHTML += `<li>Attack ${attack.count} times with ${attack.name} (${attack.type})</li>`;
+                    });
+                })
+            }).build().build()
     }
 
     generateItem(value) {
@@ -274,133 +365,108 @@ class APIResponse extends HTMLElement {
     }
 
     generateAttack(value) {
-        var elem = document.createElement("div");
-        elem.innerHTML += value.usage?`<h3>${value.name} ${this.getUsage(value.usage)}</h3>`:`<h3>${value.name}</h3>`;
-        elem.innerHTML += `<p>${value.desc}</p>`;
-        return elem;
+        return this.builder("div")
+            .addInnerHTML(value.usage?`<h3>${value.name} ${this.getUsage(value.usage)}</h3>`:`<h3>${value.name}</h3>`)
+            .addInnerHTML(`<p>${value.desc}</p>`).build()
     }
 
     generateMulticlassing(value) {
-        var elem = document.createElement("div");
-        var add_header = (text) => {
-            var header = document.createElement("h3");
-            header.innerText = text;
-            elem.appendChild(header)
-        }
+        return this.builder("div").call(elem => {
+            let add_header = (text) => {
+                elem.appendChild(this.builder("h3").setInnerText(text).build());
+            }
 
-        if (value.prerequisites) {
-            add_header("Prerequisites: ");
+            if (value.prerequisites) {
+                add_header("Prerequisites: ");
 
-            Array.from(value.prerequisites).forEach(pre => {
-                elem.appendChild(this.generatePreAbility(pre));
-            })
+                Array.from(value.prerequisites).forEach(pre => {
+                    elem.appendChild(this.generatePreAbility(pre));
+                })
 
-            elem.innerHTML += "<br>";
-        }
-        if (value.proficiencies) {
-            add_header("Proficiencies: ");
+                elem.innerHTML += "<br>";
+            }
+            if (value.proficiencies) {
+                add_header("Proficiencies: ");
 
-            Array.from(value.proficiencies).forEach(pro => {
-                elem.appendChild(this.generateApiReference(pro));
-            })
-            elem.innerHTML += "<br>";
-        }
-        if (value.proficiency_choices) {
-            add_header("Proficiency Choices: ");
+                Array.from(value.proficiencies).forEach(pro => {
+                    elem.appendChild(this.generateApiReference(pro));
+                })
+                elem.innerHTML += "<br>";
+            }
+            if (value.proficiency_choices) {
+                add_header("Proficiency Choices: ");
 
-            Array.from(value.proficiency_choices).forEach(choice => {
-                elem.appendChild(this.generateChoice(choice))
-            })
-            elem.innerHTML += "<br>";
-        }
-        return elem
-
+                Array.from(value.proficiency_choices).forEach(choice => {
+                    elem.appendChild(this.generateChoice(choice))
+                })
+                elem.innerHTML += "<br>";
+            }
+        }).build()
     }
 
     generateChoice(value) {
-        var elem = document.createElement("div");
-        elem.classList.add("choice");
+        return this.builder("div").addClass("choice").call(elem => {
+            if (!value.type) { value.type = "attack"; }
 
-        //elem.innerHTML = `Choose ${value.choose} ${value.type}`
-        if (value.type == null) {
-            value.type = "attack";
-        }
+            switch (value.type) {
+                case "bonds":
+                case "ideals":
+                case "personality_traits":
+                case "flaws": {
+                    return this.builder("table")
+                        .addElement("thead").addElement("tr").setInnerHTML(
+                            `<th>d${value.from.length}</th>
+                             <th>${this.makeReadable(value.type)}</th>`
+                        )
+                        .build()
+                        .build()
+                        .addElement("tbody").call(tbody => {
+                            Object.entries(value.from).forEach(choose => {
+                                let [_key, _value] = choose;
 
-        switch (value.type) {
-            case "bonds":
-            case "ideals":
-            case "personality_traits":
-            case "flaws": {
-                var table = document.createElement("table");
-                var tbody = document.createElement("tbody");
-                var thead = document.createElement("thead");
+                                tbody.appendChild(
+                                    this.builder("tr")
+                                        .addElement("td")
+                                            .setInnerText(Number(_key)+1)
+                                        .build()
+                                        .addElement("td")
+                                            .call(td => {
+                                                this.getValue(_key, _value).forEach(item => { td.appendChild(item) })
+                                            })
+                                        .build()
+                                        .build()
+                                );
+                            });
+                        }).build();
+                }
+                case "equipment": {
+                    return this.generateEquipmentChoice(value);
+                }
+                case "attack": {
+                    return this.generateAttackChoice(value);
+                }
+                default: {
+                    return this.generateSelectChoice(value);
+                }
 
-                var row = document.createElement("tr");
-                var col1 = document.createElement("th");
-                var col2 = document.createElement("th");
-
-                col1.innerText = `d${value.from.length}`;
-                col2.innerHTML = this.makeReadable(value.type);
-                row.appendChild(col1);
-                row.appendChild(col2);
-
-                thead.appendChild(row);
-
-                Object.entries(value.from).forEach(choose => {
-                    var [_key, _value] = choose;
-
-                    var row = document.createElement("tr");
-                    var col1 = document.createElement("td");
-                    var col2 = document.createElement("td");
-
-                    col1.innerText = _key - "-1";
-                    this.getValue(_key, _value).forEach(item => { col2.appendChild(item) })
-
-                    row.appendChild(col1);
-                    row.appendChild(col2);
-
-                    tbody.appendChild(row);
-                });
-                table.appendChild(thead);
-                table.appendChild(tbody);
-                elem.appendChild(table)
-                return elem;
             }
-            case "equipment": {
-                return this.generateEquipmentChoice(value);
-            }
-            case "attack": {
-                return this.generateAttackChoice(value);
-            }
-            default: {
-                return this.generateDefaultChoice(value);
-            }
-
-        }
+        })
     }
 
     getMainHeader() {
-        var row = document.createElement("div");
-        if (this.url.indexOf("/api/") != -1) {
+        var row = this.builder("div");
+        if (this.url.indexOf("/api/") !== -1) {
             var results = [];
             var urls = this.url.split("/api/").slice(-1)[0].split("/");
             urls.forEach((item, i) => {
                 results.push(`<a class="path-link" href="/api/${urls.slice(0, i+1).join("/")}">${this.makeReadable(item)}</a>`)
             })
-            var path = document.createElement("span");
-            path.className = "path-bar";
-            path.innerHTML = results.join(" > ");
-            row.appendChild(path);
-
-            var utils = document.createElement("span");
-            utils.className = "utils-bar";
-
+            row.addElement("span").addClass("path-bar").setInnerHTML(results.join(" > ")).build();
+            row.addElement("span").addClass("utils-bar").build();
             // add utils for users here, like printer icon with print onclick
-
-            row.appendChild(utils);
         }
 
-        return row
+        return row.build()
     }
 
     getValue(key, value) {
@@ -590,9 +656,9 @@ class APIResponse extends HTMLElement {
 
             var content_elem = document.createElement("article");
             if (model.content) {
-                if (key == "results" || model.searchbar) {
+                if (key === "results" || model.searchbar) {
                     elem.appendChild(document.createElement("search-bar"))
-                    if (window.location.pathname == "/api/features") {
+                    if (window.location.pathname === "/api/features") {
                         value.sort((a, b) => {
                             a.name = this.makeReadable(a.index);
                             b.name = this.makeReadable(b.index);
@@ -609,9 +675,9 @@ class APIResponse extends HTMLElement {
                 })
             }
 
-            if (model.group == "default") { console.log("default:", key, value) }
+            if (model.group === "default") { console.log("default:", key, value) }
 
-            if (content_elem.innerText == "" && !model.accept_empty) { return; }
+            if (content_elem.innerText === "" && !model.accept_empty) { return; }
 
             if (model.markdown) { content_elem.innerHTML = this.markdown(Array.isArray(value)?value.join("<br><br>"):value) }
 
@@ -648,44 +714,6 @@ class APIResponse extends HTMLElement {
 
         this.shadowRoot.appendChild(this.getMainHeader());
         this.shadowRoot.appendChild(content);
-    }
-
-    isObject(item) {
-        return (item && typeof item === 'object' && !Array.isArray(item));
-    }
-
-    mergeDeep(target, source) {
-        let output = Object.assign({}, target);
-        if (!this.isObject(target) && !this.isObject(source)) { return output; }
-
-        Object.keys(source).forEach(key => {
-            if (this.isObject(source[key])) {
-                if (!(key in target)) {
-                    Object.assign(output, { [key]: source[key] });
-                }
-                else {
-                    output[key] = this.mergeDeep(target[key], source[key]);
-                }
-            }
-            else if (Array.isArray(source[key])) {
-                Object.assign(output, { [key]: source[key].concat(target[key]) });
-            }
-            else {
-                Object.assign(output, { [key]: source[key] });
-            }
-        });
-        return output;
-    }
-
-    markdown(text) {
-        if (text) {
-            text = marked.parse(text);
-            return text;
-        }
-        else {
-            return ""
-        }
-
     }
 }
 
