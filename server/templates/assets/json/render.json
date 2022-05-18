@@ -254,6 +254,21 @@
 		"rarity": {
 			"$ref": "#/commons/description-1"
 		},
+		"age": {
+			"$ref": "#/commons/description-1"
+		},
+		"language_desc": {
+			"$ref": "#/commons/description-1",
+			"headings": {
+				"content": "languages"
+			}
+		},
+		"size_description": {
+			"$ref": "#/commons/description-1",
+			"headings": {
+				"content": "size"
+			}
+		},
 
 		"desc": {
 			"$ref": "#/commons/description-2",
@@ -263,22 +278,7 @@
 			"markdown":true,
 			"priority": -10
 		},
-		"language_desc": {
-			"$ref": "#/commons/description-2",
-			"headings": {
-				"content": "languages"
-			}
-		},
-		"size_description": {
-			"$ref": "#/commons/description-2",
-			"headings": {
-				"content": "size"
-			}
-		},
 		"higher_level": {
-			"$ref": "#/commons/description-2"
-		},
-		"age": {
 			"$ref": "#/commons/description-2"
 		},
 		"skills": {
@@ -308,7 +308,8 @@
 			"$ref": "#/commons/description-2"
 		},
 		"class_levels": {
-			"$ref": "#/commons/description-2"
+			"$ref": "#/commons/description-2",
+			"classes": ["x-overflow"]
 		},
 		"equipment": {
 			"$ref": "#/commons/description-2"

@@ -3,12 +3,20 @@
     #description-top-group {
         grid-template-columns: auto auto auto auto;
     }
+
+    .api-reference-wide {
+        width: calc(100% / 3 - 34px);
+    }
 }
 
 @media (max-width: 992px) and (min-width:601px) {
     /*Medium displays*/
     #description-top-group {
         grid-template-columns: auto auto auto;
+    }
+
+    .api-reference-wide {
+        width: calc(100% / 2 - 34px);
     }
 }
 
@@ -20,6 +28,10 @@
 
     #skills-group {
         grid-template-columns: auto auto auto !important;
+    }
+
+    .api-reference-wide {
+        width: calc(100% / 1 - 34px)
     }
 }
 
@@ -65,6 +77,13 @@ article {
 
 }
 
+.api-reference-wide:hover,
+.api-reference:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+.api-reference-wide,
 .api-reference {
     background-color: #000;
     color: #fff;
@@ -73,6 +92,8 @@ article {
     margin: 4px 4px;
     text-align: center;
     cursor: pointer;
+    border: #000 solid 1px;
+    height: 100%;
 }
 
 div#content > div {
@@ -198,4 +219,9 @@ iframe {
 
 .utils-bar {
     float: right;
+}
+
+.x-overflow {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }

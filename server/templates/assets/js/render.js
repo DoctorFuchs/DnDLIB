@@ -1,11 +1,12 @@
 class Builder {
-    constructor(instance, tag) {
+    constructor(instance, tag, parent=false) {
         this.instance = instance;
         this.result = document.createElement(tag);
+        this.parent = parent;
     }
 
     addElement(tag) {
-        return new Builder(this, tag);
+        return new Builder(this, tag, true);
     }
 
     call(callback) {
@@ -14,7 +15,7 @@ class Builder {
     }
 
     build(attach=false) {
-        if (this.instance.class === Builder) {
+        if (this.parent) {
             this.instance.result.appendChild(this.result);
             return this.instance;
         }
@@ -52,7 +53,7 @@ class Builder {
     }
 
     addClass(class_name) {
-        this.result.className += class_name;
+        this.result.className += " "+class_name;
         return this;
     }
 
@@ -66,6 +67,11 @@ class Builder {
 
     appendChild(elem) {
         this.result.appendChild(elem);
+        return this;
+    }
+
+    id(id) {
+        this.result.id = id;
         return this;
     }
 }
@@ -413,31 +419,38 @@ class APIResponse extends Base {
                 case "ideals":
                 case "personality_traits":
                 case "flaws": {
-                    return this.builder("table")
-                        .addElement("thead").addElement("tr").setInnerHTML(
-                            `<th>d${value.from.length}</th>
-                             <th>${this.makeReadable(value.type)}</th>`
-                        )
-                        .build()
-                        .build()
-                        .addElement("tbody").call(tbody => {
-                            Object.entries(value.from).forEach(choose => {
-                                let [_key, _value] = choose;
+                    elem.appendChild(
+                        this.builder("table")
+                            .addElement("thead")
+                                .addElement("tr")
+                                    .setInnerHTML(
+                                        `<th>d${value.from.length}</th>
+                                        <th>${this.makeReadable(value.type)}</th>`
+                                    )
+                                .build()
+                            .build()
+                            .addElement("tbody").call(tbody => {
+                                Object.entries(value.from).forEach(choose => {
+                                    let [_key, _value] = choose;
 
-                                tbody.appendChild(
-                                    this.builder("tr")
-                                        .addElement("td")
-                                            .setInnerText(Number(_key)+1)
-                                        .build()
-                                        .addElement("td")
-                                            .call(td => {
-                                                this.getValue(_key, _value).forEach(item => { td.appendChild(item) })
-                                            })
-                                        .build()
-                                        .build()
-                                );
-                            });
-                        }).build();
+                                    tbody.appendChild(
+                                        this.builder("tr")
+                                            .addElement("td")
+                                                .setInnerText(Number(_key)+1)
+                                            .build()
+                                            .addElement("td")
+                                                .call(td => {
+                                                    this.getValue(_key, _value).forEach(item => { td.appendChild(item) })
+                                                })
+                                            .build()
+                                            .build()
+                                    );
+                                });
+                            })
+                            .build()
+                            .build()
+                    );
+                    break;
                 }
                 case "equipment": {
                     return this.generateEquipmentChoice(value);
@@ -517,16 +530,33 @@ class APIResponse extends Base {
             }
             switch (typeof value[0]) {
                 case "string": {
-                    result = Array.of(this.builder("div").setInnerHTML(value.join(", ")));
+                    result = Array.of(this.builder("div").setInnerHTML(value.join(", ")).build());
                     break;
                 }
                 case "object": {
-                    value.forEach(item => {
-                        result = result.concat(this.getValue(key, item));
-                    });
+                    if (key === "results" && Array.from(value).length > 30) {
+                        let last = {name: "~"}
+                        value.forEach(item => {
+                            if (!item.name.startsWith(last.name[0])) {
+                                result = result.concat(this.getValue(item.name[0], { tag:"h3", text: item.name[0] }));
+                            }
+                            result = result.concat(this.getValue(key, item));
+                            last = item;
+                        })
+                    }
+                    else {
+                        value.forEach(item => {
+                            let elem = this.getValue(key, item);
+                            if (key === "results") {
+                                elem[0].className = "api-reference-wide";
+                            }
+                            result = result.concat(elem);
+                        });
+                    }
                     break;
                 }
             }
+
             return result;
         }
         else if (this.isObject(value)) {
@@ -535,7 +565,7 @@ class APIResponse extends Base {
                     return Array.of(this.generateApiReference(value));
                 }
                 case "tag,text": {
-                    return Array.of(this.builder(value.tag).setInnerText(this.makeReadable(value.text)))
+                    return Array.of(this.builder(value.tag).setInnerText(this.makeReadable(value.text)).build())
                 }
                 case "size,type": {
                     return Array.of(this.generateAreaOfEffect(value));
@@ -702,11 +732,12 @@ class APIResponse extends Base {
 
         Object.entries(groups).forEach(entry => {
             const [key, values] = entry;
-            let group_element = document.createElement("div");
-            group_element.id = `${key}-group`;
-            values.forEach(element => {
-                group_element.appendChild(element);
-            })
+            let group_element = this.builder("div").id(`${key}-group`).call(e => {
+                values.forEach(element => {
+                    e.appendChild(element);
+                })
+            }).build();
+
             content.appendChild(group_element);
         })
 

@@ -18,21 +18,37 @@ class SearchBar extends HTMLElement {
 
         if (!this.isGlobalSearch()) {
             inputElement.onkeyup =  e => {
-                var targets = this.parentNode.getElementsByTagName("article")[0].children;
-                var filter = inputElement.value.toUpperCase();
+                let article = this.parentNode.getElementsByTagName("article")[0];
+                let targets = article.getElementsByTagName("div");
+                let filter = inputElement.value.toUpperCase();
                 for (let i = 0; i < targets.length; i++) {
-                    var txtValue = targets[i].textContent || targets[i].innerText;
+                    let txtValue = targets[i].textContent || targets[i].innerText;
                     if (txtValue.toUpperCase().indexOf(filter) > -1) {
                         targets[i].style.display = "";
                     } else {
                         targets[i].style.display = "none";
                     }
                 }
+                Array.from(article.getElementsByTagName("h3")).forEach(e => {
+                    e.style.display = "";
+                })
+                let was_heading = [false, 0];
+                for (let i = 0; i < article.children.length; i++) {
+                    let target = article.children[i];
+                    let visible = target.style.display !== "none";
+                    let is_heading = target.tagName === "H3";
+                    if (is_heading && was_heading[0] || i === article.children.length-1 && was_heading[0]) {
+                        article.children[was_heading[1]].style.display = "none";
+                    }
+                    if (visible) {
+                        was_heading = [is_heading, i];
+                    }
+                }
             }
         }
         else {
-            inputElement.onkeypress = e => {
-                if (e.keyCode == 13) {
+            inputElement.onkeydown = e => {
+                if (e.keyCode === 13) {
                     e.preventDefault();
                     window.location = `${window.location.origin}/search?query=${inputElement.value}`
                 }

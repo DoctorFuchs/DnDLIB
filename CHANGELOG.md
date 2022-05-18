@@ -3,6 +3,13 @@
 - character builder (v1.0.0)
 - wiki for homebrew things (v1.0.0)
 
+### version 0.0.8 -> 0.0.9 (around 20th May)
+- sorting system (A-Z)
+- responsive support (90% -> 95%)
+  - tables are now more responsive
+  - results are more responsive
+- header bar (time for utils! (like print, save as bookmark...))
+
 ### version 0.0.7 -> 0.0.8 (around 10th May 2022)
 - responsive support (40% to 90%)
 - license update
