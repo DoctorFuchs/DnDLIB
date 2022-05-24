@@ -9,6 +9,7 @@
   - tables are now more responsive
   - results are more responsive
 - header bar (time for utils! (like print, save as bookmark...))
+- Documentation
 
 ### version 0.0.7 -> 0.0.8 (around 10th May 2022)
 - responsive support (40% to 90%)
