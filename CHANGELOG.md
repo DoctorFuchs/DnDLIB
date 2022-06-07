@@ -3,6 +3,10 @@
 - character builder (v1.0.0)
 - wiki for homebrew things (v1.0.0)
 
+### version 0.0.9 -> 0.0.10 (around 07 Juni)
+- final clean up
+- bug fixes (searching)
+
 ### version 0.0.8 -> 0.0.9 (around 20th May)
 - sorting system (A-Z)
 - responsive support (90% -> 95%)
