@@ -537,6 +537,9 @@ class APIResponse extends Base {
                     if (key === "results" && Array.from(value).length > 30) {
                         let last = {name: "~"}
                         value.forEach(item => {
+                            if (item.tag && item.text) {
+                                result = result.concat(this.getValue(key, item));
+                            }
                             if (!item.name.startsWith(last.name[0])) {
                                 result = result.concat(this.getValue(item.name[0], { tag:"h3", text: item.name[0] }));
                             }
@@ -547,12 +550,23 @@ class APIResponse extends Base {
                     else {
                         value.forEach(item => {
                             let elem = this.getValue(key, item);
-                            if (key === "results") {
+                            if (key === "results" && !item.text && !item.tag) {
                                 elem[0].className = "api-reference-wide";
                             }
                             result = result.concat(elem);
                         });
                     }
+                    break;
+                    value.forEach(item => {
+                        let elem = this.getValue(key, item);
+                        if (key === "results" && item.name && item.url && item.index) {
+                            elem[0].className = "api-reference-wide";
+                        }
+                        if (value.length < 30 && item.tag && item.text) {
+                            return;
+                        }
+                        result = result.concat(elem);
+                    });
                     break;
                 }
             }

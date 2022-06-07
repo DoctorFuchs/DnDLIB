@@ -34,7 +34,6 @@ class API:
         return result
 
     def get_raw(self, path):
-        print(path)
         path = self.cut(path)
         if path in self.cache: return self.cache[path]
         resp = requests.get(self.api_url + path)
@@ -50,7 +49,7 @@ class API:
                 continue
             results = [*results, {
                 "text": key,
-                "tag": "h2"
+                "tag": "h3"
             }, *result, {
                 "name": key,
                 "index": key,

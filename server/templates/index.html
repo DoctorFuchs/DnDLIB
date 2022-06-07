@@ -4,5 +4,12 @@
 {% endblock %}
 {% block content %}
 <h1 class="w3-center">Welcome to {{ site.get("APP", "name") }}</h1>
+<p class="w3-center">{{ site.get("APP", "description") }}</p>
 <search-bar></search-bar>
+<hr>
+<div class="responsive-grid grid-borders">
+    {% for node_key, node_link in api.get("/").items() %}
+        <a href="{{node_link}}" class="w3-center w3-section w3-hover-text-green">{{node_key.capitalize().replace("-", " ")}}</a>
+    {% endfor %}
+</div>
 {% endblock %}

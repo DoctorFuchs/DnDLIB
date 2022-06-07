@@ -36,7 +36,7 @@ class SearchBar extends HTMLElement {
                 for (let i = 0; i < article.children.length; i++) {
                     let target = article.children[i];
                     let visible = target.style.display !== "none";
-                    let is_heading = target.tagName === "H3";
+                    let is_heading = target.tagName.startswith("H");
                     if (is_heading && was_heading[0] || i === article.children.length-1 && was_heading[0]) {
                         article.children[was_heading[1]].style.display = "none";
                     }

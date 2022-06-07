@@ -10,6 +10,16 @@
 	background-image: image("https://upload.wikimedia.org/wikipedia/commons/7/7e/2010-1-meeting-under-the-tree.jpg");
 }
 
+.grid-borders {
+	grid-gap: 3px !important;
+}
+
+.grid-borders * {
+	margin: 0  !important;
+	padding: 10px;
+	border: black 1px solid;
+}
+
 .responsive-grid {
 	display: grid;
 	grid-gap: 10px;
